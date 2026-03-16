@@ -87,20 +87,20 @@ export default function Hero({ onOpenLead }: HeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex flex-wrap gap-4 md:gap-6 pt-2"
+          className="flex flex-wrap gap-4 md:gap-6 pt-4"
         >
           <button 
             onClick={onOpenLead}
-            className="w-full sm:w-auto px-10 py-5 bg-orange-600 hover:bg-orange-500 text-white font-black rounded-2xl shadow-xl shadow-orange-600/20 uppercase tracking-wider text-sm transition-all active:scale-95 relative overflow-hidden group"
+            className="w-full sm:w-auto px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-base md:text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 active:translate-y-0 relative overflow-hidden group"
           >
-            <span className="relative z-10">Взять под защиту</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-400/0 via-white/20 to-orange-400/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
           </button>
           <a 
             href="https://ria.ru/20260224/sud-2076330347.html" 
             target="_blank" 
             rel="noreferrer"
-            className="w-full sm:w-auto px-10 py-5 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all active:scale-95"
+            className="w-full sm:w-auto px-10 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95 active:translate-y-0"
           >
             История ареста <ArrowUpRight className="w-4 h-4" />
           </a>

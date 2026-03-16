@@ -32,13 +32,13 @@ export default function MarketingAudit() {
     return (
       <div 
         key={point.title}
-        className="group relative flex items-center gap-3 p-3 text-xs rounded-xl bg-white/5 border border-transparent text-slate-300 hover:bg-white/10 transition-colors cursor-help"
+        className="group relative flex items-center gap-3 p-3.5 md:p-3 text-sm md:text-xs rounded-xl bg-white/5 border border-transparent text-slate-300 hover:bg-white/10 transition-colors cursor-help min-h-[44px]"
       >
-        <Icon className="w-4 h-4 opacity-70 shrink-0" />
-        <span className="font-medium">{point.title}</span>
+        <Icon className="w-5 h-5 md:w-4 md:h-4 opacity-70 shrink-0" />
+        <span className="font-medium leading-snug">{point.title}</span>
         
         {/* Tooltip */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none translate-y-2 group-hover:translate-y-0">
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-[calc(100vw-4rem)] max-w-[260px] sm:max-w-none sm:w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none translate-y-2 group-hover:translate-y-0">
           <div className="bg-slate-900/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-slate-700/50 relative">
             <p className={`font-bold mb-1.5 text-sm leading-tight ${colorClass}`}>{point.title}</p>
             <p className="text-slate-300 leading-relaxed text-xs whitespace-normal">{point.text}</p>
@@ -50,9 +50,9 @@ export default function MarketingAudit() {
   };
 
   return (
-    <section id="marketing" className="relative max-w-7xl mx-auto px-6 py-20 md:py-32 rounded-[4rem] border border-white/10 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl shadow-sky-900/20">
+    <section id="marketing" className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-32 rounded-[2.5rem] md:rounded-[4rem] border border-white/10 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl shadow-sky-900/20">
       {/* Decorative background elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[4rem]">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[2.5rem] md:rounded-[4rem]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full">
           <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px]" />
@@ -67,12 +67,12 @@ export default function MarketingAudit() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-12 md:mb-24"
         >
           <div className="inline-block px-4 py-1.5 bg-sky-500/10 border border-sky-500/20 rounded-full text-sky-400 text-[10px] font-black uppercase tracking-widest mb-6 shadow-[0_0_15px_rgba(56,189,248,0.15)]">
             Бонус
           </div>
-          <h2 className="text-4xl md:text-6xl font-heading font-black uppercase tracking-tighter leading-none mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-heading font-black uppercase tracking-tighter leading-none mb-6">
             Маркетинговый <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">аудит лендинга</span>
           </h2>
           <p className="text-slate-400 text-sm md:text-base max-w-3xl mx-auto leading-relaxed">
@@ -85,22 +85,22 @@ export default function MarketingAudit() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
           {/* Pressure Structure */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="frosted p-8 border-t-4 border-t-sky-500 rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
+            className="frosted p-6 md:p-8 border-t-4 border-t-sky-500 rounded-[2rem] md:rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-wrap justify-between items-start gap-3 mb-6">
               <motion.h3 
                 whileHover={{ scale: 1.05, x: 5 }}
                 className="font-heading font-black text-xl text-sky-400 uppercase cursor-default hover:text-sky-300 transition-colors origin-left"
               >
                 I. Структура<br/>давления
               </motion.h3>
-              <span className="text-[10px] font-bold text-sky-300 bg-sky-500/10 px-2 py-1 rounded-lg border border-sky-500/20 whitespace-nowrap">0-10 БАЛЛОВ</span>
+              <span className="text-[10px] font-bold text-sky-300 bg-sky-500/10 px-2 py-1 rounded-lg border border-sky-500/20 whitespace-nowrap mt-1">0-10 БАЛЛОВ</span>
             </div>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">Анализ убедительности предложения и наличия необходимых триггеров доверия.</p>
             <div className="space-y-2 flex-grow">
@@ -114,16 +114,16 @@ export default function MarketingAudit() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="frosted p-8 border-t-4 border-t-blue-400 rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
+            className="frosted p-6 md:p-8 border-t-4 border-t-blue-400 rounded-[2rem] md:rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-wrap justify-between items-start gap-3 mb-6">
               <motion.h3 
                 whileHover={{ scale: 1.05, x: 5 }}
                 className="font-heading font-black text-xl text-blue-400 uppercase cursor-default hover:text-blue-300 transition-colors origin-left"
               >
                 II. Ясность<br/>коммуникации
               </motion.h3>
-              <span className="text-[10px] font-bold text-blue-300 bg-blue-400/10 px-2 py-1 rounded-lg border border-blue-400/20 whitespace-nowrap">0-10 БАЛЛОВ</span>
+              <span className="text-[10px] font-bold text-blue-300 bg-blue-400/10 px-2 py-1 rounded-lg border border-blue-400/20 whitespace-nowrap mt-1">0-10 БАЛЛОВ</span>
             </div>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">Оценка того, насколько быстро и легко пользователь понимает суть продукта.</p>
             <div className="space-y-2 flex-grow">
@@ -137,16 +137,16 @@ export default function MarketingAudit() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="frosted p-8 border-t-4 border-t-indigo-400 rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
+            className="frosted p-6 md:p-8 border-t-4 border-t-indigo-400 rounded-[2rem] md:rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-wrap justify-between items-start gap-3 mb-6">
               <motion.h3 
                 whileHover={{ scale: 1.05, x: 5 }}
                 className="font-heading font-black text-xl text-indigo-400 uppercase cursor-default hover:text-indigo-300 transition-colors origin-left"
               >
                 III. Потери<br/>конверсии
               </motion.h3>
-              <span className="text-[10px] font-bold text-indigo-300 bg-indigo-400/10 px-2 py-1 rounded-lg border border-indigo-400/20 whitespace-nowrap">0-10 БАЛЛОВ</span>
+              <span className="text-[10px] font-bold text-indigo-300 bg-indigo-400/10 px-2 py-1 rounded-lg border border-indigo-400/20 whitespace-nowrap mt-1">0-10 БАЛЛОВ</span>
             </div>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">Поиск "дыр" в воронке, где пользователи уходят без целевого действия.</p>
             <div className="space-y-2 flex-grow">
@@ -159,14 +159,14 @@ export default function MarketingAudit() {
         </div>
 
         {/* Scoring and Plan */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="frosted p-8 md:p-12 rounded-[3rem] border-white/5 bg-slate-900/50 backdrop-blur-md"
+            className="frosted p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] border-white/5 bg-slate-900/50 backdrop-blur-md"
           >
-            <h4 className="font-heading font-black text-xl uppercase mb-8 tracking-tighter">Общая оценка маркетинга (0–10)</h4>
+            <h4 className="font-heading font-black text-xl uppercase mb-6 md:mb-8 tracking-tighter">Общая оценка маркетинга (0–10)</h4>
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-4 bg-white/5 rounded-2xl gap-2 border border-white/5 hover:bg-white/10 transition-colors">
                 <span className="text-emerald-400 font-bold whitespace-nowrap">8–10 Отличный</span>
@@ -191,9 +191,9 @@ export default function MarketingAudit() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="frosted p-8 md:p-12 rounded-[3rem] border-white/5 bg-slate-900/50 backdrop-blur-md"
+            className="frosted p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] border-white/5 bg-slate-900/50 backdrop-blur-md"
           >
-            <h4 className="font-heading font-black text-xl uppercase mb-8 tracking-tighter">IV. План улучшений</h4>
+            <h4 className="font-heading font-black text-xl uppercase mb-6 md:mb-8 tracking-tighter">IV. План улучшений</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-4">
                 <p className="text-sm font-black uppercase text-sky-400 flex items-center gap-2">
