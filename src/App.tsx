@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import Modals from './components/Modals';
 import CookieBanner from './components/CookieBanner';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import VoiceWidget from './components/VoiceWidget';
 import { AuditPoint } from './types';
 
 // Lazy loading components below the fold for performance optimization
@@ -74,6 +75,7 @@ export default function App() {
       </footer>
 
       <CookieBanner />
+      <VoiceWidget />
       {isPrivacyOpen && <PrivacyPolicy onClose={() => setIsPrivacyOpen(false)} />}
       <Modals
         isLeadOpen={isLeadOpen}
