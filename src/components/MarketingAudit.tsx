@@ -94,7 +94,12 @@ export default function MarketingAudit() {
             className="frosted p-8 border-t-4 border-t-sky-500 rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
           >
             <div className="flex justify-between items-start mb-6">
-              <h3 className="font-heading font-black text-xl text-sky-400 uppercase">I. Структура<br/>давления</h3>
+              <motion.h3 
+                whileHover={{ scale: 1.05, x: 5 }}
+                className="font-heading font-black text-xl text-sky-400 uppercase cursor-default hover:text-sky-300 transition-colors origin-left"
+              >
+                I. Структура<br/>давления
+              </motion.h3>
               <span className="text-[10px] font-bold text-sky-300 bg-sky-500/10 px-2 py-1 rounded-lg border border-sky-500/20 whitespace-nowrap">0-10 БАЛЛОВ</span>
             </div>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">Анализ убедительности предложения и наличия необходимых триггеров доверия.</p>
@@ -112,7 +117,12 @@ export default function MarketingAudit() {
             className="frosted p-8 border-t-4 border-t-blue-400 rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
           >
             <div className="flex justify-between items-start mb-6">
-              <h3 className="font-heading font-black text-xl text-blue-400 uppercase">II. Ясность<br/>коммуникации</h3>
+              <motion.h3 
+                whileHover={{ scale: 1.05, x: 5 }}
+                className="font-heading font-black text-xl text-blue-400 uppercase cursor-default hover:text-blue-300 transition-colors origin-left"
+              >
+                II. Ясность<br/>коммуникации
+              </motion.h3>
               <span className="text-[10px] font-bold text-blue-300 bg-blue-400/10 px-2 py-1 rounded-lg border border-blue-400/20 whitespace-nowrap">0-10 БАЛЛОВ</span>
             </div>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">Оценка того, насколько быстро и легко пользователь понимает суть продукта.</p>
@@ -130,7 +140,12 @@ export default function MarketingAudit() {
             className="frosted p-8 border-t-4 border-t-indigo-400 rounded-[2.5rem] flex flex-col bg-slate-900/50 backdrop-blur-md"
           >
             <div className="flex justify-between items-start mb-6">
-              <h3 className="font-heading font-black text-xl text-indigo-400 uppercase">III. Потери<br/>конверсии</h3>
+              <motion.h3 
+                whileHover={{ scale: 1.05, x: 5 }}
+                className="font-heading font-black text-xl text-indigo-400 uppercase cursor-default hover:text-indigo-300 transition-colors origin-left"
+              >
+                III. Потери<br/>конверсии
+              </motion.h3>
               <span className="text-[10px] font-bold text-indigo-300 bg-indigo-400/10 px-2 py-1 rounded-lg border border-indigo-400/20 whitespace-nowrap">0-10 БАЛЛОВ</span>
             </div>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">Поиск "дыр" в воронке, где пользователи уходят без целевого действия.</p>

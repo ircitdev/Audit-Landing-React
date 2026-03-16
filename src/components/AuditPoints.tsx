@@ -4,6 +4,44 @@ import { AUDIT_DATA } from '../constants';
 import { AuditPoint } from '../types';
 import { Check, X, AlertTriangle, ArrowRight } from 'lucide-react';
 
+const getLawBadge = (article?: string) => {
+  if (!article) return null;
+  
+  let badgeClass = "";
+  let shortName = "";
+
+  if (article.includes('152-ФЗ')) {
+    badgeClass = "bg-orange-500/10 text-orange-400 border-orange-500/20";
+    shortName = '152-ФЗ';
+  } else if (article.includes('КоАП')) {
+    badgeClass = "bg-red-500/10 text-red-400 border-red-500/20";
+    shortName = 'КоАП';
+  } else if (article.includes('ФЗ №41')) {
+    badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+    shortName = 'ФЗ №41';
+  } else if (article.includes('ГК РФ')) {
+    badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+    shortName = 'ГК РФ';
+  } else if (article.includes('99-ФЗ')) {
+    badgeClass = "bg-yellow-500/10 text-yellow-400 border-yellow-500/20";
+    shortName = '99-ФЗ';
+  } else if (article.includes('Закон о рекламе')) {
+    badgeClass = "bg-orange-500/10 text-orange-400 border-orange-500/20";
+    shortName = 'Реклама';
+  } else if (article.includes('ЗоЗПП')) {
+    badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+    shortName = 'ЗоЗПП';
+  } else {
+    return null;
+  }
+
+  return (
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase border ${badgeClass} shrink-0 leading-none`}>
+      {shortName}
+    </span>
+  );
+};
+
 interface AuditPointsProps {
   onPointClick: (point: AuditPoint) => void;
 }
@@ -39,7 +77,10 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
           className="group relative flex items-center gap-3 p-4 md:p-3 text-sm md:text-xs rounded-xl bg-white/5 border border-transparent text-slate-300 hover:bg-white/10 transition-colors cursor-help min-h-[44px]"
         >
           <Icon className="w-5 h-5 md:w-4 md:h-4 opacity-70 shrink-0" />
-          <span className="font-medium leading-snug">{id}. {point.title}</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="font-medium leading-snug">{id}. {point.title}</span>
+            {getLawBadge(point.article)}
+          </div>
           
           {/* Tooltip */}
           <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-[calc(100vw-3rem)] max-w-[260px] sm:max-w-none sm:w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none translate-y-2 group-hover:translate-y-0">
@@ -61,9 +102,12 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
         whileTap={{ scale: 0.98 }}
         className="group relative flex items-center justify-between p-4 md:p-3 text-sm md:text-xs cursor-pointer rounded-xl transition-colors duration-200 bg-white/5 hover:bg-black/40 hover:text-orange-400 border border-transparent active:bg-white/10 md:hover:border-orange-500/30 md:hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] min-h-[44px]"
       >
-        <div className="flex items-center gap-3 pr-2">
+        <div className="flex items-center gap-3 pr-2 flex-1">
           <Icon className="w-5 h-5 md:w-4 md:h-4 opacity-70 group-hover:opacity-100 transition-opacity shrink-0" />
-          <span className="font-medium leading-snug">{id}. {point.title}</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="font-medium leading-snug">{id}. {point.title}</span>
+            {getLawBadge(point.article)}
+          </div>
         </div>
         <ArrowRight className="w-5 h-5 md:w-4 md:h-4 opacity-50 md:opacity-0 -translate-x-1 md:-translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-orange-500 shrink-0" />
         
@@ -80,7 +124,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
   }, [onPointClick]);
 
   const renderSkeletonColumn = (borderColor: string, titleColor: string, title: string) => (
-    <div className={`frosted p-8 border-t-4 ${borderColor} rounded-[2.5rem] flex flex-col`}>
+    <div className={`frosted p-6 md:p-8 border-t-4 ${borderColor} rounded-[2rem] md:rounded-[2.5rem] flex flex-col`}>
       <h3 className={`font-heading font-black text-xl ${titleColor} uppercase mb-6 opacity-50`}>{title}</h3>
       <div className="space-y-2 flex-grow">
         {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -123,7 +167,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="frosted p-8 border-t-4 border-t-red-500 rounded-[2.5rem] flex flex-col"
+            className="frosted p-6 md:p-8 border-t-4 border-t-red-500 rounded-[2rem] md:rounded-[2.5rem] flex flex-col"
           >
             <h3 className="font-heading font-black text-xl text-red-500 uppercase mb-6">ЗАКОН</h3>
             <div className="space-y-2 flex-grow">
@@ -152,7 +196,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="frosted p-8 border-t-4 border-t-sky-500 rounded-[2.5rem]"
+            className="frosted p-6 md:p-8 border-t-4 border-t-sky-500 rounded-[2rem] md:rounded-[2.5rem]"
           >
             <h3 className="font-heading font-black text-xl text-sky-400 uppercase mb-6">ЗАЩИТА</h3>
             <div className="space-y-2">
@@ -166,7 +210,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="frosted p-8 border-t-4 border-t-emerald-500 rounded-[2.5rem]"
+            className="frosted p-6 md:p-8 border-t-4 border-t-emerald-500 rounded-[2rem] md:rounded-[2.5rem]"
           >
             <h3 className="font-heading font-black text-xl text-emerald-400 uppercase mb-6">СКОРОСТЬ</h3>
             <div className="space-y-2">
@@ -180,7 +224,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="frosted p-8 border-t-4 border-t-purple-500 rounded-[2.5rem]"
+            className="frosted p-6 md:p-8 border-t-4 border-t-purple-500 rounded-[2rem] md:rounded-[2.5rem]"
           >
             <h3 className="font-heading font-black text-xl text-purple-400 uppercase mb-6">РОСТ (SEO)</h3>
             <div className="space-y-2">
@@ -196,7 +240,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="frosted p-8 md:p-12 rounded-[3rem] border-white/5"
+          className="frosted p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] border-white/5"
         >
           <h4 className="font-heading font-black text-xl uppercase mb-8 tracking-tighter">Статусы проверки</h4>
           <div className="space-y-4">
@@ -225,7 +269,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="frosted p-8 md:p-12 rounded-[3rem] border-white/5"
+          className="frosted p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] border-white/5"
         >
           <h4 className="font-heading font-black text-xl uppercase mb-8 tracking-tighter">Ключевые законы</h4>
           <div className="space-y-4">
