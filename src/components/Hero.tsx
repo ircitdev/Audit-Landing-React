@@ -6,6 +6,7 @@ export default function Hero() {
   const [displayText, setDisplayText] = useState("");
   const fullText = "Бронежилет";
   const [isTypingDone, setIsTypingDone] = useState(false);
+  const [isArticleOpen, setIsArticleOpen] = useState(false);
 
   useEffect(() => {
     let i = 0;
@@ -94,15 +95,35 @@ export default function Hero() {
             <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
           </a>
-          <a 
-            href="https://ria.ru/20260224/sud-2076330347.html" 
-            target="_blank" 
-            rel="noreferrer"
+          <button
+            onClick={() => setIsArticleOpen(true)}
             className="w-full sm:w-auto px-10 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95 active:translate-y-0"
           >
             История ареста <ArrowUpRight className="w-4 h-4" />
-          </a>
+          </button>
         </motion.div>
+
+      {isArticleOpen && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/90 flex flex-col"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsArticleOpen(false); }}
+        >
+          <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-white/10 flex-shrink-0">
+            <span className="text-white text-sm font-semibold truncate">РИА Новости — История ареста</span>
+            <button
+              onClick={() => setIsArticleOpen(false)}
+              className="text-slate-400 hover:text-white text-2xl leading-none ml-4 flex-shrink-0"
+            >
+              ×
+            </button>
+          </div>
+          <iframe
+            src="https://ria.ru/20260224/sud-2076330347.html"
+            className="flex-1 w-full border-0"
+            title="История ареста — РИА Новости"
+          />
+        </div>
+      )}
       </div>
       
       <motion.div 
