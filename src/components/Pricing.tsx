@@ -33,12 +33,14 @@ export default function Pricing({ onOpenLead }: PricingProps) {
           </ul>
           
           <div className="w-full md:w-auto flex-1 flex justify-end relative z-10">
-            <button 
-              onClick={() => onOpenLead('Разведка')}
+            <a
+              href="https://t.me/WebAuditRuBot?start=razvedka"
+              target="_blank"
+              rel="noreferrer"
               className="w-full md:w-auto px-10 py-6 bg-slate-900 hover:bg-slate-800 text-white rounded-[2rem] text-center font-black text-sm uppercase tracking-widest transition-all shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1"
             >
               ЗАКАЗАТЬ АУДИТ
-            </button>
+            </a>
           </div>
         </motion.div>
 
@@ -84,12 +86,14 @@ export default function Pricing({ onOpenLead }: PricingProps) {
               <li className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500" /> Юр. документы</li>
               <li className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500" /> Скрипты внедрения</li>
             </ul>
-            <button 
-              onClick={() => onOpenLead('Проект')}
-              className="w-full py-5 border border-slate-700 hover:border-orange-500 hover:text-orange-500 rounded-[2rem] text-center font-black text-xs uppercase tracking-widest text-white transition-colors"
+            <a
+              href="https://t.me/WebAuditRuBot?start=proekt"
+              target="_blank"
+              rel="noreferrer"
+              className="w-full py-5 border border-slate-700 hover:border-orange-500 hover:text-orange-500 rounded-[2rem] text-center font-black text-xs uppercase tracking-widest text-white transition-colors block"
             >
               ПОЛУЧИТЬ ПЛАН
-            </button>
+            </a>
           </motion.div>
         </div>
       </div>

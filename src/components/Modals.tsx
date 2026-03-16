@@ -16,6 +16,7 @@ const CHAT_ID = '-1003889865771';
 
 export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedPoint, onClosePoint }: ModalsProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [consent, setConsent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -84,9 +85,25 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
               <input name="site" type="url" placeholder="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
               <textarea name="message" rows={3} placeholder="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none"></textarea>
               
-              <button 
-                type="submit" 
-                disabled={status === 'loading' || status === 'success'}
+              <label className="md:col-span-2 flex items-start gap-3 cursor-pointer mt-2">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 shrink-0 accent-orange-500"
+                />
+                <span className="text-xs text-slate-400 leading-relaxed">
+                  Даю согласие на{' '}
+                  <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('open-privacy'))} className="text-orange-500 hover:text-orange-400 underline underline-offset-2">
+                    обработку персональных данных
+                  </button>
+                  {' '}в соответствии с Федеральным законом № 152-ФЗ
+                </span>
+              </label>
+
+              <button
+                type="submit"
+                disabled={status === 'loading' || status === 'success' || !consent}
                 className="md:col-span-2 bg-orange-600 hover:bg-orange-500 py-5 rounded-xl font-black uppercase text-sm tracking-widest transition-all shadow-xl shadow-orange-600/20 text-white disabled:opacity-50 mt-2"
               >
                 {status === 'loading' ? 'ОТПРАВКА...' : status === 'success' ? 'ОТПРАВЛЕНО' : 'ОТПРАВИТЬ'}

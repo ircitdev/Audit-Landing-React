@@ -2,11 +2,7 @@ import React from 'react';
 import { Shield } from 'lucide-react';
 import { motion } from 'motion/react';
 
-interface NavbarProps {
-  onOpenLead: () => void;
-}
-
-export default function Navbar({ onOpenLead }: NavbarProps) {
+export default function Navbar() {
   return (
     <motion.nav 
       initial={{ y: -100 }}
@@ -20,7 +16,7 @@ export default function Navbar({ onOpenLead }: NavbarProps) {
         >
           <Shield className="w-8 h-8 text-orange-500 group-hover:scale-110 transition-transform" />
           <span className="font-heading font-black tracking-tighter uppercase text-xl text-white">
-            Soldatov<span className="text-orange-500">Security</span>
+            Сайт<span className="text-orange-500">ЧИСТ!</span>
           </span>
         </div>
         <div className="hidden lg:flex gap-8 text-sm font-bold uppercase tracking-wider">
@@ -29,12 +25,14 @@ export default function Navbar({ onOpenLead }: NavbarProps) {
           <a href="#download" className="text-slate-300 hover:text-orange-500 transition-colors">Презентация</a>
           <a href="#pricing" className="text-slate-300 hover:text-orange-500 transition-colors">Тарифы</a>
         </div>
-        <button 
-          onClick={onOpenLead}
+        <a
+          href="https://t.me/WebAuditRuBot?start=sos_audit"
+          target="_blank"
+          rel="noreferrer"
           className="bg-orange-600 hover:bg-orange-500 px-6 py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-orange-600/20 text-white transition-all active:scale-95"
         >
           SOS АУДИТ
-        </button>
+        </a>
       </div>
     </motion.nav>
   );

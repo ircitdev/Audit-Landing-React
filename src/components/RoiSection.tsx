@@ -8,11 +8,7 @@ const data = [
   { name: 'Инвестиция в защиту', value: 90000, color: '#f97316', hoverColor: '#fb923c' },
 ];
 
-interface RoiSectionProps {
-  onOpenLead: () => void;
-}
-
-export default function RoiSection({ onOpenLead }: RoiSectionProps) {
+export default function RoiSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -95,23 +91,25 @@ export default function RoiSection({ onOpenLead }: RoiSectionProps) {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="space-y-10 order-1 lg:order-2 text-center lg:text-left"
         >
-          <h2 className="text-5xl md:text-7xl font-heading font-black uppercase leading-none tracking-tighter text-slate-900">
-            Математика <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">Спокойствия</span>
+          <h2 className="text-4xl md:text-7xl font-heading font-black uppercase leading-none tracking-tighter text-slate-900">
+            <span className="text-white">Математика</span> <br /> <span className="text-orange-500">Спокойствия</span>
           </h2>
           
-          <div className="relative bg-gradient-to-br from-orange-50/80 to-white p-8 md:p-12 border border-orange-100/50 rounded-[2rem] md:rounded-[3rem] shadow-lg shadow-orange-500/5">
-            <Quote className="absolute top-8 left-8 w-10 h-10 text-orange-500/10 rotate-180" />
-            <p className="relative z-10 text-slate-700 leading-relaxed text-xl md:text-2xl italic font-medium">
-              "Инвестиция в защиту в <span className="text-orange-600 font-bold">200 раз</span> меньше потенциальных убытков. Мы убираем риски до того, как они станут проблемами. Спокойный сон собственника — бесценен."
+          <div className="relative bg-slate-900 p-8 md:p-12 border border-slate-700/50 rounded-[2rem] md:rounded-[3rem] shadow-lg">
+            <Quote className="absolute top-8 left-8 w-10 h-10 text-orange-500/20 rotate-180" />
+            <p className="relative z-10 text-slate-200 leading-relaxed text-xl md:text-2xl italic font-medium">
+              "Инвестиция в защиту в <span className="text-orange-500 font-bold">200 раз</span> меньше потенциальных убытков. Мы убираем риски до того, как они станут проблемами. Спокойный сон собственника — бесценен."
             </p>
           </div>
 
-          <button 
-            onClick={onOpenLead}
+          <a
+            href="https://t.me/WebAuditRuBot?start=zakazat_audit"
+            target="_blank"
+            rel="noreferrer"
             className="inline-flex items-center gap-3 px-12 py-6 md:px-16 md:py-8 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl md:rounded-3xl transition-all shadow-[0_20px_40px_-15px_rgba(15,23,42,0.4)] hover:shadow-[0_20px_40px_-10px_rgba(15,23,42,0.5)] hover:-translate-y-1 uppercase tracking-widest text-xs md:text-sm active:scale-95"
           >
             Заказать аудит <ArrowUpRight className="w-5 h-5 text-orange-400" />
-          </button>
+          </a>
         </motion.div>
       </div>
 
@@ -230,15 +228,14 @@ export default function RoiSection({ onOpenLead }: RoiSectionProps) {
                 </li>
               </ul>
               
-              <button 
-                onClick={() => {
-                  setIsModalOpen(false);
-                  onOpenLead();
-                }}
-                className="w-full py-5 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-xl uppercase tracking-wider text-sm transition-colors active:scale-95"
+              <a
+                href="https://t.me/WebAuditRuBot?start=zakazat_audit"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-5 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-xl uppercase tracking-wider text-sm transition-colors active:scale-95 block text-center"
               >
                 Заказать аудит
-              </button>
+              </a>
             </motion.div>
           </div>
         )}

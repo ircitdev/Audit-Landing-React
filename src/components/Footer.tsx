@@ -49,6 +49,32 @@ export default function Footer() {
           </p>
         </motion.div>
       </div>
+
+      {/* Legal info */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 mt-16 pt-10 border-t border-white/5">
+        <div className="flex flex-col md:flex-row justify-between gap-8 text-center md:text-left">
+          <div className="space-y-2 text-[11px] text-slate-600 leading-relaxed">
+            <p className="text-slate-500 font-bold">ИП Солдатов Денис Алексеевич</p>
+            <p>ИНН: 770412389456 &nbsp;|&nbsp; ОГРНИП: 324774600298451</p>
+            <p>119019, г. Москва, ул. Новый Арбат, д. 15, оф. 401</p>
+            <p>info@sitechist.ru &nbsp;|&nbsp; +7 925 148 5560</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 items-center text-[11px]">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-privacy'))}
+              className="text-slate-500 hover:text-orange-500 transition-colors underline underline-offset-2"
+            >
+              Политика конфиденциальности
+            </button>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-privacy'))}
+              className="text-slate-500 hover:text-orange-500 transition-colors underline underline-offset-2"
+            >
+              Согласие на обработку ПДн
+            </button>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }

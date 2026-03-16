@@ -2,6 +2,8 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Modals from './components/Modals';
+import CookieBanner from './components/CookieBanner';
+import PrivacyPolicy from './components/PrivacyPolicy';
 import { AuditPoint } from './types';
 
 // Lazy loading components below the fold for performance optimization
@@ -18,6 +20,13 @@ export default function App() {
   const [isLeadOpen, setIsLeadOpen] = useState(false);
   const [leadPackage, setLeadPackage] = useState('Главная');
   const [selectedPoint, setSelectedPoint] = useState<AuditPoint | null>(null);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setIsPrivacyOpen(true);
+    window.addEventListener('open-privacy', handler);
+    return () => window.removeEventListener('open-privacy', handler);
+  }, []);
 
   // Handle body scroll lock when modals are open
   useEffect(() => {
@@ -41,18 +50,18 @@ export default function App() {
       <div className="bg-cubes" />
       
       <header className="flex-none w-full z-50">
-        <Navbar onOpenLead={() => handleOpenLead('SOS АУДИТ')} />
+        <Navbar />
       </header>
       
       <main className="flex-grow flex flex-col w-full relative z-10 pt-24 md:pt-32 pb-20">
-        <Hero onOpenLead={() => handleOpenLead('Главная')} />
+        <Hero />
         
         <Suspense fallback={<div className="h-32 flex items-center justify-center text-orange-500/50">Загрузка...</div>}>
           <DownloadSection />
           <Roadmap />
           <AuditPoints onPointClick={setSelectedPoint} />
           <MarketingAudit />
-          <RoiSection onOpenLead={() => handleOpenLead('ROI Секция')} />
+          <RoiSection />
           <Pricing onOpenLead={handleOpenLead} />
           <FAQ />
         </Suspense>
@@ -64,7 +73,9 @@ export default function App() {
         </Suspense>
       </footer>
 
-      <Modals 
+      <CookieBanner />
+      {isPrivacyOpen && <PrivacyPolicy onClose={() => setIsPrivacyOpen(false)} />}
+      <Modals
         isLeadOpen={isLeadOpen}
         leadPackage={leadPackage}
         onCloseLead={() => setIsLeadOpen(false)}
