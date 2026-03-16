@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Target, Gem, Handshake, ShieldAlert, MousePointerClick, Timer, UserCheck, Flame, Map, VolumeX, FileWarning, HelpCircle, RouteOff, FormInput, Hourglass } from 'lucide-react';
+import { Target, Gem, Handshake, ShieldAlert, MousePointerClick, Timer, UserCheck, Flame, Map, VolumeX, FileWarning, HelpCircle, RouteOff, FormInput, Hourglass, X } from 'lucide-react';
 
 const pressurePoints = [
   { title: 'Чёткий оффер', text: 'Есть ли конкретное предложение на первом экране? Понятно ли, что получит клиент?', icon: Target },
@@ -27,18 +27,21 @@ const conversionPoints = [
 ];
 
 export default function MarketingAudit() {
+  const [activeTooltip, setActiveTooltip] = useState<{ title: string; text: string; colorClass: string } | null>(null);
+
   const renderPoint = (point: any, colorClass: string) => {
     const Icon = point.icon;
     return (
-      <div 
+      <div
         key={point.title}
         className="group relative flex items-center gap-3 p-3.5 md:p-3 text-sm md:text-xs rounded-xl bg-white/5 border border-transparent text-slate-300 hover:bg-white/10 transition-colors cursor-help min-h-[44px]"
+        onClick={() => setActiveTooltip({ title: point.title, text: point.text, colorClass })}
       >
         <Icon className="w-5 h-5 md:w-4 md:h-4 opacity-70 shrink-0" />
         <span className="font-medium leading-snug">{point.title}</span>
-        
-        {/* Tooltip */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-[calc(100vw-4rem)] max-w-[260px] sm:max-w-none sm:w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none translate-y-2 group-hover:translate-y-0">
+
+        {/* Desktop tooltip — hover only */}
+        <div className="hidden md:block absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none translate-y-2 group-hover:translate-y-0">
           <div className="bg-slate-900/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-slate-700/50 relative">
             <p className={`font-bold mb-1.5 text-sm leading-tight ${colorClass}`}>{point.title}</p>
             <p className="text-slate-300 leading-relaxed text-xs whitespace-normal">{point.text}</p>
@@ -50,6 +53,24 @@ export default function MarketingAudit() {
   };
 
   return (
+    <>
+    {/* Mobile tooltip overlay */}
+    {activeTooltip && (
+      <div
+        className="md:hidden fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-6"
+        onClick={() => setActiveTooltip(null)}
+      >
+        <div className="bg-slate-900 border border-slate-700/50 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+          <div className="flex justify-between items-start mb-3">
+            <p className={`font-bold text-base leading-tight ${activeTooltip.colorClass}`}>{activeTooltip.title}</p>
+            <button onClick={() => setActiveTooltip(null)} className="text-slate-400 ml-3 shrink-0">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <p className="text-slate-300 leading-relaxed text-sm">{activeTooltip.text}</p>
+        </div>
+      </div>
+    )}
     <section id="marketing" className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-32 rounded-[2.5rem] md:rounded-[4rem] border border-white/10 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl shadow-sky-900/20">
       {/* Decorative background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[2.5rem] md:rounded-[4rem]">
@@ -222,5 +243,6 @@ export default function MarketingAudit() {
         </div>
       </div>
     </section>
+    </>
   );
 }
