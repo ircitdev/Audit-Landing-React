@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
 import { reachGoal } from '../metrika';
@@ -33,6 +33,30 @@ const getUtmParams = () => {
 export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedPoint, onClosePoint }: ModalsProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [consent, setConsent] = useState(false);
+  const leadModalRef = useRef<HTMLDivElement>(null);
+  const pointModalRef = useRef<HTMLDivElement>(null);
+
+  // Reset form state when modal opens
+  useEffect(() => {
+    if (isLeadOpen) {
+      setStatus('idle');
+      setConsent(false);
+    }
+  }, [isLeadOpen]);
+
+  // Escape key handler
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isLeadOpen) onCloseLead();
+        else if (selectedPoint) onClosePoint();
+      }
+    };
+    if (isLeadOpen || selectedPoint) {
+      document.addEventListener('keydown', handler);
+    }
+    return () => document.removeEventListener('keydown', handler);
+  }, [isLeadOpen, selectedPoint, onCloseLead, onClosePoint]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,8 +118,9 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="frosted relative w-full max-w-xl p-6 md:p-10 rounded-[2rem] border border-orange-500/30 shadow-2xl z-10"
           >
-            <button 
-              onClick={onCloseLead} 
+            <button
+              onClick={onCloseLead}
+              aria-label="Закрыть"
               className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors"
             >
               <X className="w-8 h-8" />
@@ -143,13 +168,13 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
                   {leadPackage || 'Заявка'}
                 </h3>
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input name="name" type="text" placeholder="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-                  <input name="company" type="text" placeholder="Компания" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-                  <input name="industry" type="text" placeholder="Сфера деятельности" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-                  <input name="phone" type="tel" placeholder="Телефон" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-                  <input name="telegram" type="text" placeholder="TG @" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-                  <input name="site" type="url" placeholder="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-                  <textarea name="message" rows={3} placeholder="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none"></textarea>
+                  <input name="name" type="text" placeholder="Имя" aria-label="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <input name="company" type="text" placeholder="Компания" aria-label="Компания" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                  <input name="industry" type="text" placeholder="Сфера деятельности" aria-label="Сфера деятельности" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                  <input name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <input name="telegram" type="text" placeholder="TG @" aria-label="Telegram" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                  <input name="site" type="url" placeholder="Сайт" aria-label="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <textarea name="message" rows={3} placeholder="Ваш вопрос" aria-label="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none"></textarea>
 
                   <label className="md:col-span-2 flex items-start gap-3 cursor-pointer mt-2">
                     <input
@@ -203,8 +228,9 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="frosted p-8 md:p-12 w-full max-w-2xl border-sky-500/30 shadow-2xl relative rounded-[2.5rem] md:rounded-[3rem] z-10"
           >
-            <button 
-              onClick={onClosePoint} 
+            <button
+              onClick={onClosePoint}
+              aria-label="Закрыть"
               className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors"
             >
               <X className="w-8 h-8" />

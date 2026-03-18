@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { AUDIT_DATA } from '../constants';
 import { AuditPoint } from '../types';
@@ -47,16 +47,7 @@ interface AuditPointsProps {
 }
 
 export default function AuditPoints({ onPointClick }: AuditPointsProps) {
-  const [isLoading, setIsLoading] = useState(true);
   const [showExtraLaw, setShowExtraLaw] = useState(false);
-
-  useEffect(() => {
-    // Simulate data fetching or processing
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const lawPoints = [1, 2, 3, 4, 5, 6];
   const extraLawPoints = [25, 26, 27, 30, 31, 32, 28, 29];
@@ -123,20 +114,6 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
     );
   }, [onPointClick]);
 
-  const renderSkeletonColumn = (borderColor: string, titleColor: string, title: string) => (
-    <div className={`frosted p-6 md:p-8 border-t-4 ${borderColor} rounded-[2rem] md:rounded-[2.5rem] flex flex-col`}>
-      <h3 className={`font-heading font-black text-xl ${titleColor} uppercase mb-6 opacity-50`}>{title}</h3>
-      <div className="space-y-2 flex-grow">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="flex items-center gap-3 p-4 md:p-3 rounded-xl bg-white/5 animate-pulse min-h-[44px]">
-            <div className="w-5 h-5 md:w-4 md:h-4 rounded bg-white/10 shrink-0" />
-            <div className="h-4 bg-white/10 rounded w-full" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
   return (
     <section id="audit" className="max-w-7xl mx-auto px-6 py-20 md:py-32">
       <motion.div 
@@ -153,15 +130,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
         </p>
       </motion.div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-20">
-          {renderSkeletonColumn('border-t-red-500', 'text-red-500', 'ЗАКОН')}
-          {renderSkeletonColumn('border-t-sky-500', 'text-sky-400', 'ЗАЩИТА')}
-          {renderSkeletonColumn('border-t-emerald-500', 'text-emerald-400', 'СКОРОСТЬ')}
-          {renderSkeletonColumn('border-t-purple-500', 'text-purple-400', 'РОСТ (SEO)')}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-20">
           {/* LAW */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -232,7 +201,6 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             </div>
           </motion.div>
         </div>
-      )}
 
       {/* STATUSES AND LAWS SUMMARY */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { ArrowUpRight, Quote, X, ShieldCheck, CheckCircle2, Layers, Shield, TrendingUp } from 'lucide-react';
 import { reachGoal } from '../metrika';
 
-const data = [
-  { name: 'Убытки от проверок', value: 18000000, color: '#ef4444', hoverColor: '#ef4444' },
-  { name: 'Инвестиция в защиту', value: 90000, color: '#f97316', hoverColor: '#fb923c' },
+const bars = [
+  { name: 'Убытки от проверок', value: 18_000_000, color: 'bg-red-500', label: '18 000 000 ₽', heightPct: 90 },
+  { name: 'Инвестиция в защиту', value: 90_000, color: 'bg-orange-500', label: '90 000 ₽', heightPct: 2 },
 ];
 
 export default function RoiSection() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -33,55 +31,21 @@ export default function RoiSection() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="order-2 lg:order-1 bg-white/80 backdrop-blur-xl p-8 md:p-12 rounded-[3rem] md:rounded-[4rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] border border-white relative"
         >
-          {/* Hint for interactivity */}
-          <div className="absolute top-6 right-8 text-[10px] font-bold uppercase tracking-widest text-orange-500 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-200/50 animate-pulse pointer-events-none">
-            Нажми на график
-          </div>
-
-          <div className="h-[300px] md:h-[400px] w-full mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} margin={{ top: 20, right: 0, left: 0, bottom: 20 }}>
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#64748b', fontSize: 13, fontWeight: 600 }} 
-                  dy={15}
+          <div className="flex items-end justify-center gap-12 md:gap-20 h-[300px] md:h-[400px] w-full pt-8 pb-4">
+            {bars.map((bar, i) => (
+              <div key={i} className="flex flex-col items-center flex-1 max-w-[120px] h-full justify-end">
+                <span className="text-sm md:text-base font-black text-slate-700 mb-3">{bar.label}</span>
+                <motion.div
+                  initial={{ height: 0 }}
+                  whileInView={{ height: `${bar.heightPct}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: i * 0.2, ease: 'easeOut' }}
+                  onClick={() => i === 1 && setIsModalOpen(true)}
+                  className={`${bar.color} w-16 md:w-20 rounded-t-2xl transition-shadow duration-300 ${i === 1 ? 'cursor-pointer hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]' : ''}`}
                 />
-                <Tooltip 
-                  cursor={{ fill: 'rgba(0,0,0,0.02)' }}
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(226, 232, 240, 0.8)', 
-                    borderRadius: '1rem', 
-                    color: '#0f172a', 
-                    fontWeight: 600, 
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' 
-                  }}
-                  itemStyle={{ color: '#0f172a' }}
-                  formatter={(value: number) => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(value)}
-                />
-                <Bar dataKey="value" radius={[16, 16, 0, 0]} barSize={80}>
-                  {data.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={hoveredIndex === index ? entry.hoverColor : entry.color} 
-                      onMouseEnter={() => setHoveredIndex(index)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                      onClick={() => {
-                        if (index === 1) setIsModalOpen(true);
-                      }}
-                      style={{ 
-                        cursor: index === 1 ? 'pointer' : 'default', 
-                        transition: 'fill 0.3s ease',
-                        filter: hoveredIndex === index && index === 1 ? 'drop-shadow(0 0 12px rgba(249,115,22,0.4))' : 'none'
-                      }}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                <span className="text-xs md:text-sm font-semibold text-slate-500 mt-4 text-center leading-tight">{bar.name}</span>
+              </div>
+            ))}
           </div>
         </motion.div>
 
@@ -93,7 +57,7 @@ export default function RoiSection() {
           className="space-y-10 order-1 lg:order-2 text-center lg:text-left"
         >
           <h2 className="text-4xl md:text-7xl font-heading font-black uppercase leading-none tracking-tighter text-slate-900">
-            <span className="text-white">Математика</span> <br /> <span className="text-orange-500">Спокойствия</span>
+            <span className="text-slate-900">Математика</span> <br /> <span className="text-orange-500">Спокойствия</span>
           </h2>
           
           <div className="relative bg-slate-900 p-8 md:p-12 border border-slate-700/50 rounded-[2rem] md:rounded-[3rem] shadow-lg">

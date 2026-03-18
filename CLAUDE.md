@@ -6,7 +6,7 @@ Landing page for website compliance audit service (Russian market). Checks websi
 
 ## Tech stack
 
-- **Frontend:** React 19, Vite, Tailwind CSS 4, Motion (Framer Motion), Recharts, Lucide icons
+- **Frontend:** React 19, Vite, Tailwind CSS 4, Motion (Framer Motion), Lucide icons
 - **Backend:** Express (server.ts) with tsx runner
 - **Analytics:** Yandex.Metrika (counter 107728471) with custom goals via `src/metrika.ts`
 - **Lead pipeline:** Form → Express API → Telegram Bot API + Google Sheets (Apps Script)
