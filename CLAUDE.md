@@ -23,12 +23,15 @@ Landing page for website compliance audit service (Russian market). Checks websi
 
 ### Lead flow
 ```
-Form (Modals.tsx) → POST /api/send-lead (api/send-lead.ts) → Telegram + Google Sheets
+Form (Modals.tsx)        → POST /api/send-lead  → Telegram + Google Sheets
+AI chat/voice widget     → POST /api/ai-lead    → Telegram + Google Sheets
+AI widget bot redirect   → POST /api/ai-notify  → Telegram notification
 ```
 - Client collects UTM params, deep link, referrer automatically
 - Server sends to Telegram (with thread/topic support) and Google Sheets in parallel
 - Google Sheets CRM via Apps Script webhook (`google-apps-script.js`)
 - Secrets in `.env` (gitignored), never in client code
+- All API endpoints have rate limiting (5 req/hour/IP)
 
 ### Telegram deep links
 All bot links use format `?start=action__source` for tracking. Parser splits on `__`.
@@ -42,10 +45,11 @@ All bot links use format `?start=action__source` for tracking. Parser splits on 
 |------|---------|
 | `src/components/Modals.tsx` | Lead form + post-submit bot CTA + UTM collection |
 | `src/components/Pricing.tsx` | 3 pricing tiers, all open lead form |
-| `api/send-lead.ts` | Express router: Telegram + Google Sheets |
+| `api/send-lead.ts` | Express router: lead, AI-lead, AI-notify endpoints + rate limiting |
 | `server.ts` | Express server for production |
 | `src/metrika.ts` | Yandex.Metrika reachGoal helper |
 | `google-apps-script.js` | Google Apps Script CRM (copy to Sheets) |
+| `public/voice-widget.js` | AI voice/chat widget (vanilla JS, uses server API for TG) |
 | `docs/LEAD-PIPELINE.md` | Full pipeline documentation |
 
 ## Conventions

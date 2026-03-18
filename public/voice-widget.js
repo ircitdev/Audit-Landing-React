@@ -9,9 +9,7 @@
   // ─── Config ──────────────────────────────
   var PROXY_BASE = 'https://sitechist.ru/gemini-api';
   var PROXY_WS_URL = 'wss://sitechist.ru/ws-gemini';
-  var TG_BOT_TOKEN = '8628600595:AAFmkPAeCe16M9rWqVRoWpJ1rrW-POqiFek';
-  var TG_CHAT_ID = '-1003889865771';
-  var TG_TOPIC_ID = null;
+  // Telegram notifications go through server API (token is server-side only)
 
   // ─── System Prompt ────────────────────────
   var SYSTEM_INSTRUCTION = [
@@ -147,43 +145,21 @@
     return buf;
   }
 
-  // ─── Telegram ─────────────────────────────
-  function escHtml(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
+  // ─── Server API (no tokens on client) ─────
   function sendBotNotification(mode) {
-    var modeLabel = mode === 'voice' ? '🎙 голосовой' : '💬 текстовый';
-    var lines = [
-      '🤖 <b>AI-консультант направил клиента в бота</b>',
-      '',
-      '📋 Режим: ' + escHtml(modeLabel),
-      '🔗 Клиент перешёл в @WebAuditRuBot',
-      '',
-      '📅 ' + escHtml(new Date().toLocaleString('ru-RU')),
-    ];
-    var body = { chat_id: TG_CHAT_ID, text: lines.join('\n'), parse_mode: 'HTML' };
-    if (TG_TOPIC_ID) body.message_thread_id = TG_TOPIC_ID;
-    return fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
+    return fetch('/api/ai-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: mode }),
+    }).catch(function(e) { console.error('[AI notify] error:', e); });
   }
 
   function sendLeadToTelegram(data) {
-    var lines = [
-      '🤖 <b>Заявка от AI-консультанта — СайтЧИСТ!</b>',
-      '',
-      '👤 <b>Имя:</b> ' + escHtml(data.name || '—'),
-      '📞 <b>Телефон:</b> ' + escHtml(data.phone || '—'),
-      '🌐 <b>Сайт:</b> ' + escHtml(data.site || '—'),
-      '',
-      '📅 ' + escHtml(new Date().toLocaleString('ru-RU')),
-    ];
-    var body = { chat_id: TG_CHAT_ID, text: lines.join('\n'), parse_mode: 'HTML' };
-    if (TG_TOPIC_ID) body.message_thread_id = TG_TOPIC_ID;
-    return fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    }).then(function(r) { return r.json(); }).catch(function(e) { console.error('[AI lead] TG error:', e); });
+    return fetch('/api/ai-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: data.name, phone: data.phone, site: data.site }),
+    }).then(function(r) { return r.json(); }).catch(function(e) { console.error('[AI lead] error:', e); });
   }
 
   // ─── Bot CTA ──────────────────────────────

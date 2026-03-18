@@ -1,6 +1,37 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 
 const router = Router();
+
+// Simple in-memory rate limiter: max 5 requests per IP per hour
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 5;
+const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
+
+function rateLimit(req: Request, res: Response, next: NextFunction) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return next();
+  }
+
+  if (entry.count >= RATE_LIMIT) {
+    return res.status(429).json({ ok: false, error: 'Too many requests' });
+  }
+
+  entry.count++;
+  return next();
+}
+
+// Cleanup stale entries every 10 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(ip);
+  }
+}, 10 * 60 * 1000);
 
 const API_TOKEN = process.env.TG_BOT_TOKEN || '';
 const CHAT_ID = process.env.TG_CHAT_ID || '';
@@ -83,7 +114,7 @@ async function sendToSheet(body: LeadBody) {
   }
 }
 
-router.post('/api/send-lead', async (req, res) => {
+router.post('/api/send-lead', rateLimit, async (req, res) => {
   const body: LeadBody = req.body;
 
   if (!body.name || !API_TOKEN || !CHAT_ID) {
@@ -107,6 +138,78 @@ router.post('/api/send-lead', async (req, res) => {
     return res.status(502).json({ ok: false, error: err });
   } catch (e) {
     return res.status(500).json({ ok: false, error: 'Server error' });
+  }
+});
+
+// AI widget: bot notification (user clicked through to bot)
+router.post('/api/ai-notify', rateLimit, async (req, res) => {
+  const { mode } = req.body || {};
+  if (!API_TOKEN || !CHAT_ID) return res.status(500).json({ ok: false });
+
+  const modeLabel = mode === 'voice' ? '🎙 голосовой' : '💬 текстовый';
+  const lines = [
+    '🤖 <b>AI-консультант направил клиента в бота</b>',
+    '',
+    `📋 Режим: ${modeLabel}`,
+    '🔗 Клиент перешёл в @WebAuditRuBot',
+    '',
+    `📅 ${new Date().toLocaleString('ru-RU')}`,
+  ];
+
+  const payload: Record<string, unknown> = {
+    chat_id: CHAT_ID,
+    text: lines.join('\n'),
+    parse_mode: 'HTML',
+  };
+  if (THREAD_ID) payload.message_thread_id = Number(THREAD_ID);
+
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return r.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
+  } catch {
+    return res.status(500).json({ ok: false });
+  }
+});
+
+// AI widget: lead from chat/voice form
+router.post('/api/ai-lead', rateLimit, async (req, res) => {
+  const { name, phone, site } = req.body || {};
+  if (!API_TOKEN || !CHAT_ID) return res.status(500).json({ ok: false });
+
+  const esc = (s: string) => String(s || '—').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const lines = [
+    '🤖 <b>Заявка от AI-консультанта — СайтЧИСТ!</b>',
+    '',
+    `👤 <b>Имя:</b> ${esc(name)}`,
+    `📞 <b>Телефон:</b> ${esc(phone)}`,
+    `🌐 <b>Сайт:</b> ${esc(site)}`,
+    '',
+    `📅 ${esc(new Date().toLocaleString('ru-RU'))}`,
+  ];
+
+  const payload: Record<string, unknown> = {
+    chat_id: CHAT_ID,
+    text: lines.join('\n'),
+    parse_mode: 'HTML',
+  };
+  if (THREAD_ID) payload.message_thread_id = Number(THREAD_ID);
+
+  try {
+    const [tgResponse] = await Promise.all([
+      fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }),
+      sendToSheet({ name, phone, site, package: 'AI-консультант' }),
+    ]);
+    return tgResponse.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
+  } catch {
+    return res.status(500).json({ ok: false });
   }
 });
 
