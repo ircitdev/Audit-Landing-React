@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
+import { reachGoal } from '../metrika';
 import { AuditPoint } from '../types';
 
 interface ModalsProps {
@@ -11,8 +12,23 @@ interface ModalsProps {
   onClosePoint: () => void;
 }
 
-const API_TOKEN = '8628600595AAFmkPAeCe16M9rWqVRoWpJ1rrW-POqiFek';
-const CHAT_ID = '-1003889865771';
+const packageSlug = (pkg: string) => {
+  if (pkg.includes('Разведка')) return 'razvedka';
+  if (pkg.includes('Проект')) return 'proekt';
+  if (pkg.includes('Броня')) return 'bronya';
+  return 'general';
+};
+
+const getUtmParams = () => {
+  const params = new URLSearchParams(window.location.search);
+  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  const utm: Record<string, string> = {};
+  for (const key of utmKeys) {
+    const val = params.get(key);
+    if (val) utm[key] = val;
+  }
+  return utm;
+};
 
 export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedPoint, onClosePoint }: ModalsProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -21,25 +37,36 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('loading');
-    
+
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    
-    const msg = `🚀 НОВЫЙ ЛИД: ${leadPackage}\n👤: ${data.name}\n🏢: ${data.company}\n💼: ${data.industry}\n📞: ${data.phone}\n📱: ${data.telegram}\n🌐: ${data.site}\n✉️: ${data.message}`;
+    const utm = getUtmParams();
+    const slug = packageSlug(leadPackage);
+    const deepLink = `https://t.me/WebAuditRuBot?start=free_audit__${slug}`;
 
     try {
-      const response = await fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
+      const response = await fetch('/api/send-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+        body: JSON.stringify({
+          package: leadPackage,
+          name: data.name,
+          company: data.company,
+          industry: data.industry,
+          phone: data.phone,
+          telegram: data.telegram,
+          site: data.site,
+          message: data.message,
+          deepLink,
+          utm,
+          referrer: document.referrer || null,
+          page: window.location.href,
+        })
       });
       
       if (response.ok) {
+        reachGoal('lead_form_submit', { package: leadPackage });
         setStatus('success');
-        setTimeout(() => {
-          setStatus('idle');
-          onCloseLead();
-        }, 3000);
       } else {
         throw new Error('Failed to send message');
       }
@@ -73,53 +100,89 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
             >
               <X className="w-8 h-8" />
             </button>
-            <h3 className="font-heading font-black text-2xl md:text-3xl uppercase tracking-tighter mb-8 text-center text-white">
-              {leadPackage || 'Заявка'}
-            </h3>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input name="name" type="text" placeholder="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-              <input name="company" type="text" placeholder="Компания" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-              <input name="industry" type="text" placeholder="Сфера деятельности" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-              <input name="phone" type="tel" placeholder="Телефон" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-              <input name="telegram" type="text" placeholder="TG @" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-              <input name="site" type="url" placeholder="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-              <textarea name="message" rows={3} placeholder="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none"></textarea>
-              
-              <label className="md:col-span-2 flex items-start gap-3 cursor-pointer mt-2">
-                <input
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 shrink-0 accent-orange-500"
-                />
-                <span className="text-xs text-slate-400 leading-relaxed">
-                  Даю согласие на{' '}
-                  <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('open-privacy'))} className="text-orange-500 hover:text-orange-400 underline underline-offset-2">
-                    обработку персональных данных
-                  </button>
-                  {' '}в соответствии с Федеральным законом № 152-ФЗ
-                </span>
-              </label>
+            {status === 'success' ? (
+              <div className="text-center space-y-6 py-4">
+                <div className="w-20 h-20 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-2xl md:text-3xl uppercase tracking-tighter text-white mb-2">
+                    Заявка отправлена
+                  </h3>
+                  <p className="text-slate-400 text-sm">
+                    Мы свяжемся с вами в ближайшее время
+                  </p>
+                </div>
 
-              <button
-                type="submit"
-                disabled={status === 'loading' || status === 'success' || !consent}
-                className="md:col-span-2 bg-orange-600 hover:bg-orange-500 py-5 rounded-xl font-black uppercase text-sm tracking-widest transition-all shadow-xl shadow-orange-600/20 text-white disabled:opacity-50 mt-2"
-              >
-                {status === 'loading' ? 'ОТПРАВКА...' : status === 'success' ? 'ОТПРАВЛЕНО' : 'ОТПРАВИТЬ'}
-              </button>
-              
-              {status === 'success' && (
-                <p className="md:col-span-2 text-center font-black mt-2 text-[10px] uppercase text-emerald-500">
-                  УСПЕШНО! МЫ СВЯЖЕМСЯ.
-                </p>
-              )}
-              {status === 'error' && (
-                <p className="md:col-span-2 text-center font-black mt-2 text-[10px] uppercase text-red-500">
-                  ОШИБКА. ПОПРОБУЙТЕ ПОЗЖЕ.
-                </p>
-              )}
-            </form>
+                <div className="frosted p-6 rounded-2xl border border-sky-500/20 bg-sky-500/5 space-y-4">
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    Пока ждёте — пройдите <span className="text-sky-400 font-bold">бесплатный экспресс-аудит</span> вашего сайта в нашем Telegram-боте. Это займёт 2 минуты.
+                  </p>
+                  <a
+                    href={`https://t.me/WebAuditRuBot?start=free_audit__${packageSlug(leadPackage)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => reachGoal('telegram_click', { source: 'post_submit_bot' })}
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-sky-500 hover:bg-sky-400 text-white font-black rounded-xl uppercase text-xs tracking-widest transition-all shadow-lg shadow-sky-500/20 hover:-translate-y-0.5"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    Бесплатный аудит
+                  </a>
+                </div>
+
+                <button
+                  onClick={() => { setStatus('idle'); onCloseLead(); }}
+                  className="text-slate-500 hover:text-white text-xs uppercase tracking-widest font-bold transition-colors"
+                >
+                  Закрыть
+                </button>
+              </div>
+            ) : (
+              <>
+                <h3 className="font-heading font-black text-2xl md:text-3xl uppercase tracking-tighter mb-8 text-center text-white">
+                  {leadPackage || 'Заявка'}
+                </h3>
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input name="name" type="text" placeholder="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <input name="company" type="text" placeholder="Компания" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                  <input name="industry" type="text" placeholder="Сфера деятельности" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                  <input name="phone" type="tel" placeholder="Телефон" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <input name="telegram" type="text" placeholder="TG @" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                  <input name="site" type="url" placeholder="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <textarea name="message" rows={3} placeholder="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none"></textarea>
+
+                  <label className="md:col-span-2 flex items-start gap-3 cursor-pointer mt-2">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 shrink-0 accent-orange-500"
+                    />
+                    <span className="text-xs text-slate-400 leading-relaxed">
+                      Даю согласие на{' '}
+                      <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('open-privacy'))} className="text-orange-500 hover:text-orange-400 underline underline-offset-2">
+                        обработку персональных данных
+                      </button>
+                      {' '}в соответствии с Федеральным законом № 152-ФЗ
+                    </span>
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={status === 'loading' || !consent}
+                    className="md:col-span-2 bg-orange-600 hover:bg-orange-500 py-5 rounded-xl font-black uppercase text-sm tracking-widest transition-all shadow-xl shadow-orange-600/20 text-white disabled:opacity-50 mt-2"
+                  >
+                    {status === 'loading' ? 'ОТПРАВКА...' : 'ОТПРАВИТЬ'}
+                  </button>
+
+                  {status === 'error' && (
+                    <p className="md:col-span-2 text-center font-black mt-2 text-[10px] uppercase text-red-500">
+                      ОШИБКА. ПОПРОБУЙТЕ ПОЗЖЕ.
+                    </p>
+                  )}
+                </form>
+              </>
+            )}
           </motion.div>
         </div>
       )}

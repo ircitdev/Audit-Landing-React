@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { ArrowUpRight, Quote, X, ShieldCheck, CheckCircle2, Layers, Shield, TrendingUp } from 'lucide-react';
+import { reachGoal } from '../metrika';
 
 const data = [
   { name: 'Убытки от проверок', value: 18000000, color: '#ef4444', hoverColor: '#ef4444' },
@@ -103,9 +104,10 @@ export default function RoiSection() {
           </div>
 
           <a
-            href="https://t.me/WebAuditRuBot?start=zakazat_audit"
+            href="https://t.me/WebAuditRuBot?start=zakazat_audit__roi_top"
             target="_blank"
             rel="noreferrer"
+            onClick={() => reachGoal('telegram_click', { source: 'roi_top' })}
             className="inline-flex items-center gap-3 px-12 py-6 md:px-16 md:py-8 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl md:rounded-3xl transition-all shadow-[0_20px_40px_-15px_rgba(15,23,42,0.4)] hover:shadow-[0_20px_40px_-10px_rgba(15,23,42,0.5)] hover:-translate-y-1 uppercase tracking-widest text-xs md:text-sm active:scale-95"
           >
             Заказать аудит <ArrowUpRight className="w-5 h-5 text-orange-400" />
@@ -229,9 +231,10 @@ export default function RoiSection() {
               </ul>
               
               <a
-                href="https://t.me/WebAuditRuBot?start=zakazat_audit"
+                href="https://t.me/WebAuditRuBot?start=zakazat_audit__roi_bottom"
                 target="_blank"
                 rel="noreferrer"
+                onClick={() => reachGoal('telegram_click', { source: 'roi_bottom' })}
                 className="w-full py-5 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-xl uppercase tracking-wider text-sm transition-colors active:scale-95 block text-center"
               >
                 Заказать аудит

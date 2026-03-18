@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Scale, Code2 } from 'lucide-react';
+import { reachGoal } from '../metrika';
 
 export default function Hero() {
   const [displayText, setDisplayText] = useState("");
@@ -87,9 +88,10 @@ export default function Hero() {
           className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6 pt-4"
         >
           <a
-            href="https://t.me/WebAuditRuBot?start=zakazat_audit"
+            href="https://t.me/WebAuditRuBot?start=zakazat_audit__hero"
             target="_blank"
             rel="noreferrer"
+            onClick={() => reachGoal('telegram_click', { source: 'hero' })}
             className="w-full sm:w-auto inline-block px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-base md:text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 active:translate-y-0 relative overflow-hidden group text-center"
           >
             <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>

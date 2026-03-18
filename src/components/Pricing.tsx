@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Check } from 'lucide-react';
+import { reachGoal } from '../metrika';
 
 interface PricingProps {
   onOpenLead: (pkg: string) => void;
@@ -33,14 +34,12 @@ export default function Pricing({ onOpenLead }: PricingProps) {
           </ul>
           
           <div className="w-full md:w-auto flex-1 flex justify-end relative z-10">
-            <a
-              href="https://t.me/WebAuditRuBot?start=razvedka"
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => { reachGoal('lead_form_open', { package: 'razvedka' }); onOpenLead('Разведка — 25 000 ₽'); }}
               className="w-full md:w-auto px-10 py-6 bg-slate-900 hover:bg-slate-800 text-white rounded-[2rem] text-center font-black text-sm uppercase tracking-widest transition-all shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1"
             >
               ЗАКАЗАТЬ АУДИТ
-            </a>
+            </button>
           </div>
         </motion.div>
 
@@ -64,7 +63,7 @@ export default function Pricing({ onOpenLead }: PricingProps) {
               <li className="flex items-center gap-4"><span className="text-2xl">🛡️</span> Сертификат DS</li>
             </ul>
             <button 
-              onClick={() => onOpenLead('Броня')}
+              onClick={() => { reachGoal('lead_form_open', { package: 'bronya' }); onOpenLead('Броня'); }}
               className="w-full bg-orange-600 hover:bg-orange-500 text-white py-6 md:py-8 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-orange-600/20 transition-all active:scale-95"
             >
               ВЗЯТЬ ПОД ЗАЩИТУ
@@ -86,14 +85,12 @@ export default function Pricing({ onOpenLead }: PricingProps) {
               <li className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500" /> Юр. документы</li>
               <li className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500" /> Скрипты внедрения</li>
             </ul>
-            <a
-              href="https://t.me/WebAuditRuBot?start=proekt"
-              target="_blank"
-              rel="noreferrer"
-              className="w-full py-5 border border-slate-700 hover:border-orange-500 hover:text-orange-500 rounded-[2rem] text-center font-black text-xs uppercase tracking-widest text-white transition-colors block"
+            <button
+              onClick={() => { reachGoal('lead_form_open', { package: 'proekt' }); onOpenLead('Проект — 45 000 ₽'); }}
+              className="w-full py-5 border border-slate-700 hover:border-orange-500 hover:text-orange-500 rounded-[2rem] text-center font-black text-xs uppercase tracking-widest text-white transition-colors"
             >
               ПОЛУЧИТЬ ПЛАН
-            </a>
+            </button>
           </motion.div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { reachGoal } from '../metrika';
 
 export default function Footer() {
   return (
@@ -18,9 +19,10 @@ export default function Footer() {
             <p className="text-2xl md:text-4xl font-black tracking-widest uppercase text-white">Денис Солдатов</p>
             <p className="text-slate-500 text-xl md:text-2xl font-medium tracking-widest">+7 925 148 5560</p>
             <a 
-              href="https://t.me/WebAuditRuBot" 
-              target="_blank" 
+              href="https://t.me/WebAuditRuBot?start=contact__footer"
+              target="_blank"
               rel="noreferrer"
+              onClick={() => reachGoal('telegram_click', { source: 'footer' })}
               className="text-orange-500 font-black uppercase text-xl md:text-3xl border-b-8 border-orange-500/20 pb-4 hover:border-orange-500 transition-all duration-500 inline-block"
             >
               @WebAuditRuBot

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { FileText } from 'lucide-react';
+import { reachGoal } from '../metrika';
 
 export default function DownloadSection() {
   return (
@@ -20,9 +21,10 @@ export default function DownloadSection() {
           </p>
         </div>
         <a 
-          href="https://storage.googleapis.com/uspeshnyy-projects/webaudit/SoldatovWebAudit.pdf" 
-          target="_blank" 
+          href="https://storage.googleapis.com/uspeshnyy-projects/webaudit/SoldatovWebAudit.pdf"
+          target="_blank"
           rel="noreferrer"
+          onClick={() => reachGoal('pdf_download')}
           className="w-full lg:w-auto bg-orange-600 text-white px-10 md:px-12 py-6 md:py-8 rounded-2xl md:rounded-3xl font-black uppercase tracking-widest shadow-2xl shadow-orange-600/20 flex items-center justify-center gap-4 hover:bg-white hover:text-orange-600 text-sm md:text-lg transition-all active:scale-95"
         >
           <FileText className="w-6 h-6 md:w-8 md:h-8" /> СКАЧАТЬ PDF

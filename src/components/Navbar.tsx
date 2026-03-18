@@ -1,5 +1,6 @@
 import React from 'react';
 import { Shield } from 'lucide-react';
+import { reachGoal } from '../metrika';
 import { motion } from 'motion/react';
 
 export default function Navbar() {
@@ -26,7 +27,8 @@ export default function Navbar() {
           <a href="#pricing" className="text-slate-300 hover:text-orange-500 transition-colors">Тарифы</a>
         </div>
         <a
-          href="https://t.me/WebAuditRuBot?start=sos_audit"
+          href="https://t.me/WebAuditRuBot?start=sos_audit__navbar"
+          onClick={() => reachGoal('telegram_click', { source: 'navbar' })}
           target="_blank"
           rel="noreferrer"
           className="bg-orange-600 hover:bg-orange-500 px-6 py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-orange-600/20 text-white transition-all active:scale-95"
