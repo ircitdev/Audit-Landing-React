@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowUpRight, Scale, Code2, X } from 'lucide-react';
+import { ArrowUpRight, Scale, Code2, X, ChevronDown } from 'lucide-react';
 import { reachGoal } from '../metrika';
 
 export default function Hero() {
@@ -122,7 +122,7 @@ export default function Hero() {
       {/* Story Modal */}
       <AnimatePresence>
         {isStoryOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[9999] flex items-end md:items-center justify-center md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -131,26 +131,32 @@ export default function Hero() {
               onClick={() => setIsStoryOpen(false)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 30 }}
-              transition={{ duration: 0.3 }}
-              className="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-slate-900 rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-2xl"
+              initial={{ opacity: 0, y: '100%' }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: '100%' }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              className="relative z-10 w-full h-full md:max-w-2xl md:h-auto md:max-h-[85vh] overflow-y-auto bg-slate-900 md:rounded-[3rem] border-0 md:border border-white/10 shadow-2xl"
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                const scrollHint = el.querySelector('[data-scroll-hint]') as HTMLElement;
+                if (scrollHint) scrollHint.style.opacity = el.scrollTop > 50 ? '0' : '1';
+              }}
             >
+              {/* Close button */}
               <button
                 onClick={() => setIsStoryOpen(false)}
                 aria-label="Закрыть"
-                className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-red-500 text-white transition-colors z-20"
+                className="sticky top-4 float-right mr-4 mt-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-red-500 text-white transition-colors z-20"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="p-8 md:p-12 space-y-6">
+              <div className="p-6 pt-2 md:p-12 space-y-6 clear-both">
                 <div>
                   <span className="inline-block px-3 py-1 bg-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/30 mb-4">
                     Личная история
                   </span>
-                  <h2 className="text-2xl md:text-4xl font-heading font-black uppercase leading-tight tracking-tight text-white">
+                  <h2 className="text-2xl md:text-4xl font-heading font-black uppercase leading-tight tracking-tight text-white pr-12 md:pr-0">
                     От <span className="text-red-500">15 суток ареста</span> до «<span className="text-orange-500">Бронежилета</span>» для вашего сайта
                   </h2>
                 </div>
@@ -191,6 +197,20 @@ export default function Hero() {
                   Читать статью об аресте <ArrowUpRight className="w-4 h-4 text-orange-400" />
                 </button>
               </div>
+
+              {/* Scroll hint — mobile only */}
+              <div
+                data-scroll-hint
+                className="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 transition-opacity duration-300 pointer-events-none"
+              >
+                <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Листайте</span>
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                >
+                  <ChevronDown className="w-6 h-6 text-orange-500" />
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         )}
@@ -198,18 +218,25 @@ export default function Hero() {
 
       {/* Article iframe */}
       {isArticleOpen && (
-        <div className="fixed inset-0 z-[99999] bg-black flex flex-col">
+        <div className="fixed inset-0 z-[99999] bg-black">
+          <iframe
+            src="https://ria.ru/20260224/sud-2076330347.html"
+            className="w-full h-full border-0"
+            title="История ареста — РИА Новости"
+          />
           <button
             onClick={() => setIsArticleOpen(false)}
-            className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-400 text-white font-black uppercase text-xs tracking-widest transition-colors flex items-center justify-center gap-2 flex-shrink-0"
+            className="fixed top-4 right-4 z-[100000] w-12 h-12 flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-400 text-white shadow-2xl shadow-black/50 transition-colors active:scale-95"
+            aria-label="Закрыть"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <button
+            onClick={() => setIsArticleOpen(false)}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100000] px-8 py-3.5 bg-orange-500 hover:bg-orange-400 text-white font-black uppercase text-xs tracking-widest rounded-full shadow-2xl shadow-black/50 transition-all active:scale-95"
           >
             ← Вернуться на сайт
           </button>
-          <iframe
-            src="https://ria.ru/20260224/sud-2076330347.html"
-            className="flex-1 w-full border-0"
-            title="История ареста — РИА Новости"
-          />
         </div>
       )}
       </div>
