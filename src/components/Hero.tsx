@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, Scale, Code2, X, ChevronDown } from 'lucide-react';
 import { reachGoal } from '../metrika';
@@ -10,7 +10,6 @@ export default function Hero() {
   const [isStoryOpen, setIsStoryOpen] = useState(false);
   const [isArticleOpen, setIsArticleOpen] = useState(false);
 
-  // Close modals on Escape
   useEffect(() => {
     if (!isArticleOpen && !isStoryOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -22,6 +21,15 @@ export default function Hero() {
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [isArticleOpen, isStoryOpen]);
+
+  useEffect(() => {
+    if (isArticleOpen) {
+      document.documentElement.classList.add('iframe-overlay-open');
+    } else {
+      document.documentElement.classList.remove('iframe-overlay-open');
+    }
+    return () => document.documentElement.classList.remove('iframe-overlay-open');
+  }, [isArticleOpen]);
 
   useEffect(() => {
     let i = 0;
@@ -36,90 +44,190 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, []);
 
+  // Shared content blocks
+  const badgeEl = (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest"
+    >
+      <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping" />
+      Готов к проверкам 2026
+    </motion.div>
+  );
+
+  const titleEl = (sizeClass: string) => (
+    <h1 className={`${sizeClass} font-heading font-black leading-[1.1] tracking-tighter uppercase`}>
+      <span className="inline-block">{displayText}</span>
+      <motion.span
+        animate={{ opacity: [1, 0] }}
+        transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+        className="inline-block w-[0.1em] h-[0.8em] bg-orange-500 ml-1 md:ml-2 align-baseline"
+      />
+      <br />
+      <motion.span
+        initial={{ opacity: 0, filter: 'blur(10px)' }}
+        animate={{ opacity: isTypingDone ? 1 : 0, filter: isTypingDone ? 'blur(0px)' : 'blur(10px)' }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="gradient-text inline-block mt-1 md:mt-2"
+      >
+        для сайта
+      </motion.span>
+    </h1>
+  );
+
+  const tagsEl = (justify: string, size: string) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className={`flex flex-wrap items-center ${justify} gap-2 md:gap-4`}
+    >
+      <div className={`flex items-center gap-2 ${size} rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md`}>
+        <Scale className="w-4 h-4 md:w-5 md:h-5 text-orange-400 shrink-0" />
+        <span className="text-xs md:text-base font-bold text-slate-200">Юрист</span>
+      </div>
+      <span className="text-slate-500 font-black text-lg md:text-xl">+</span>
+      <div className={`flex items-center gap-2 ${size} rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md`}>
+        <Code2 className="w-4 h-4 md:w-5 md:h-5 text-sky-400 shrink-0" />
+        <span className="text-xs md:text-base font-bold text-slate-200">Разработчик</span>
+      </div>
+    </motion.div>
+  );
+
+  const descEl = (
+    <motion.p
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
+      transition={{ duration: 0.5, delay: 0.4 }}
+      className="text-base md:text-xl text-slate-300 max-w-lg leading-relaxed font-light"
+    >
+      Уникальный тандем. Ликвидируем 32 уязвимости, за которые силовики блокируют бизнес и арестовывают владельцев.
+    </motion.p>
+  );
+
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center overflow-hidden">
-      <div className="space-y-8 md:space-y-10 text-center lg:text-left overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest"
+    <section className="max-w-7xl mx-auto overflow-hidden">
+      {/* ═══════ MOBILE ═══════ */}
+      <div className="lg:hidden">
+        {/* Photo — full width, gradient overlay bottom-to-top */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="relative w-full -mb-20"
         >
-          <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping"></span>
-          Compliance 2026 Ready
-        </motion.div>
-        
-        <h1 className="text-[1.75rem] xs:text-[2.2rem] sm:text-5xl md:text-7xl font-heading font-black leading-[1.1] tracking-tighter uppercase break-words">
-          <span className="inline-block">{displayText}</span>
-          <motion.span 
-            animate={{ opacity: [1, 0] }} 
-            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-            className="inline-block w-[0.1em] h-[0.8em] bg-orange-500 ml-2 align-baseline"
+          <img
+            src="https://storage.googleapis.com/uspeshnyy-projects/webaudit/soildshield500.jpg"
+            alt="Денис Солдатов"
+            className="w-full h-auto object-cover"
+            referrerPolicy="no-referrer"
+            fetchPriority="high"
           />
-          <br />
-          <motion.span 
-            initial={{ opacity: 0, filter: 'blur(10px)' }}
-            animate={{ 
-              opacity: isTypingDone ? 1 : 0, 
-              filter: isTypingDone ? 'blur(0px)' : 'blur(10px)' 
-            }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="gradient-text inline-block mt-2"
+          <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/50 to-transparent" />
+          {/* Slot badge — small, orange, left */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="absolute bottom-24 left-4 bg-orange-500 px-3 py-1.5 rounded-lg shadow-lg shadow-orange-500/30"
           >
-            для сайта
-          </motion.span>
-        </h1>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center lg:justify-start gap-2 md:gap-4"
-        >
-          <div className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md">
-            <Scale className="w-4 h-4 md:w-5 md:h-5 text-orange-400 shrink-0" />
-            <span className="text-xs md:text-base font-bold text-slate-200">Юрист</span>
-          </div>
-          <span className="text-slate-500 font-black text-lg md:text-xl">+</span>
-          <div className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md">
-            <Code2 className="w-4 h-4 md:w-5 md:h-5 text-sky-400 shrink-0" />
-            <span className="text-xs md:text-base font-bold text-slate-200">Senior Dev</span>
-          </div>
-        </motion.div>
-        
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-base md:text-xl text-slate-300 max-w-lg mx-auto lg:mx-0 leading-relaxed font-light"
-        >
-          Уникальный тандем. Ликвидируем 32 уязвимости, за которые силовики блокируют бизнес и арестовывают владельцев.
-        </motion.p>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6 pt-4"
-        >
-          <a
-            href="https://t.me/WebAuditRuBot?start=zakazat_audit__hero"
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => reachGoal('telegram_click', { source: 'hero' })}
-            className="w-full sm:w-auto inline-block px-8 py-5 md:px-12 md:py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-sm md:text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 active:translate-y-0 relative overflow-hidden group text-center"
-          >
-            <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-          </a>
-          <button
-            onClick={() => setIsStoryOpen(true)}
-            className="w-full sm:w-auto px-8 py-5 md:px-10 md:py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95 active:translate-y-0"
-          >
-            Моя история
-          </button>
+            <span className="text-white text-[11px] font-black uppercase tracking-wider">1 слот на март</span>
+          </motion.div>
         </motion.div>
 
-      {/* Story Modal */}
+        {/* Content — overlaps photo via negative margin */}
+        <div className="relative z-10 px-4 pb-10 space-y-6 text-center">
+          {badgeEl}
+          {titleEl('text-[2rem] sm:text-5xl')}
+          {tagsEl('justify-center', 'px-3 py-2')}
+          {descEl}
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="flex flex-col gap-3 pt-2"
+          >
+            <a
+              href="https://t.me/WebAuditRuBot?start=zakazat_audit__hero"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => reachGoal('telegram_click', { source: 'hero' })}
+              className="w-full px-8 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] uppercase tracking-widest text-sm transition-all active:scale-95 relative overflow-hidden group text-center"
+            >
+              <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            </a>
+            <button
+              onClick={() => setIsStoryOpen(true)}
+              className="w-full px-8 py-4 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm transition-all active:scale-95"
+            >
+              Моя история
+            </button>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ═══════ DESKTOP ═══════ */}
+      <div className="hidden lg:grid grid-cols-2 gap-24 items-center px-6 py-24">
+        <div className="space-y-10 text-left">
+          {badgeEl}
+          {titleEl('text-7xl')}
+          {tagsEl('justify-start', 'px-4 py-2.5')}
+          {descEl}
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="flex flex-wrap gap-6 pt-4"
+          >
+            <a
+              href="https://t.me/WebAuditRuBot?start=zakazat_audit__hero"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => reachGoal('telegram_click', { source: 'hero' })}
+              className="inline-block px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden group text-center"
+            >
+              <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            </a>
+            <button
+              onClick={() => setIsStoryOpen(true)}
+              className="px-10 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95"
+            >
+              Моя история
+            </button>
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.8 }}
+          className="relative"
+        >
+          <img
+            src="https://storage.googleapis.com/uspeshnyy-projects/webaudit/soildshield500.jpg"
+            alt="Денис Солдатов"
+            className="w-full h-auto rounded-[3rem] shadow-2xl border border-white/10 object-cover aspect-square"
+            referrerPolicy="no-referrer"
+            fetchPriority="high"
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="absolute -bottom-10 -right-10 frosted p-10 border-orange-500/40 shadow-2xl rounded-[3rem]"
+          >
+            <p className="text-[12px] font-black uppercase text-slate-400 mb-1 text-center">Слот на март</p>
+            <p className="text-4xl font-black text-orange-500 uppercase text-center animate-pulse">Остался: 1</p>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* ═══════ STORY MODAL ═══════ */}
       <AnimatePresence>
         {isStoryOpen && (
           <div className="fixed inset-0 z-[9999] flex items-end md:items-center justify-center md:p-4">
@@ -138,11 +246,10 @@ export default function Hero() {
               className="relative z-10 w-full h-full md:max-w-2xl md:h-auto md:max-h-[85vh] overflow-y-auto bg-slate-900 md:rounded-[3rem] border-0 md:border border-white/10 shadow-2xl"
               onScroll={(e) => {
                 const el = e.currentTarget;
-                const scrollHint = el.querySelector('[data-scroll-hint]') as HTMLElement;
-                if (scrollHint) scrollHint.style.opacity = el.scrollTop > 50 ? '0' : '1';
+                const hint = el.querySelector('[data-scroll-hint]') as HTMLElement;
+                if (hint) hint.style.opacity = el.scrollTop > 50 ? '0' : '1';
               }}
             >
-              {/* Close button */}
               <button
                 onClick={() => setIsStoryOpen(false)}
                 aria-label="Закрыть"
@@ -198,7 +305,6 @@ export default function Hero() {
                 </button>
               </div>
 
-              {/* Scroll hint — mobile only */}
               <div
                 data-scroll-hint
                 className="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 transition-opacity duration-300 pointer-events-none"
@@ -216,7 +322,7 @@ export default function Hero() {
         )}
       </AnimatePresence>
 
-      {/* Article iframe */}
+      {/* ═══════ ARTICLE IFRAME ═══════ */}
       {isArticleOpen && (
         <div className="fixed inset-0 z-[99999] bg-black">
           <iframe
@@ -239,31 +345,6 @@ export default function Hero() {
           </button>
         </div>
       )}
-      </div>
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
-        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-        transition={{ duration: 0.8 }}
-        className="relative"
-      >
-        <img 
-          src="https://storage.googleapis.com/uspeshnyy-projects/webaudit/soildshield500.jpg" 
-          alt="Бронежилет" 
-          className="w-full h-auto rounded-[3rem] shadow-2xl border border-white/10 object-cover aspect-square"
-          referrerPolicy="no-referrer"
-          fetchPriority="high"
-        />
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
-          className="absolute -bottom-6 right-2 md:-bottom-10 md:-right-10 frosted p-4 md:p-10 border-orange-500/40 shadow-2xl rounded-2xl md:rounded-[3rem]"
-        >
-          <p className="text-[10px] md:text-[12px] font-black uppercase text-slate-400 mb-1 text-center">Слот на март</p>
-          <p className="text-2xl md:text-4xl font-black text-orange-500 uppercase text-center animate-pulse">Остался: 1</p>
-        </motion.div>
-      </motion.div>
     </section>
   );
 }
