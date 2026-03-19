@@ -48,7 +48,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative selection:bg-orange-500/30 selection:text-orange-200">
+    <div className="min-h-screen flex flex-col relative selection:bg-orange-500/30 selection:text-orange-200 overflow-x-clip w-full max-w-[100vw]">
       <div className="bg-cubes" />
       
       <header className="flex-none w-full z-50">
