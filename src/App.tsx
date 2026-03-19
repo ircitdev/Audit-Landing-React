@@ -55,7 +55,7 @@ export default function App() {
         <Navbar />
       </header>
       
-      <main className="flex-grow flex flex-col w-full relative z-10 pt-24 md:pt-32 pb-20">
+      <main className="flex-grow flex flex-col w-full relative z-10 pt-16 md:pt-32 pb-20">
         <Hero />
         
         <Suspense fallback={<div className="h-32 flex items-center justify-center text-orange-500/50">Загрузка...</div>}>

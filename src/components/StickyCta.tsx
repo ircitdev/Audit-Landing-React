@@ -12,7 +12,14 @@ export default function StickyCta({ onOpenLead }: StickyCtaProps) {
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > 600);
+      // Show after Roadmap section (Штурм block)
+      const roadmap = document.getElementById('roadmap');
+      if (roadmap) {
+        const rect = roadmap.getBoundingClientRect();
+        setVisible(rect.bottom < window.innerHeight);
+      } else {
+        setVisible(window.scrollY > 2500);
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);

@@ -642,7 +642,21 @@
   if (window.innerWidth > 767) {
     setTimeout(function () { toggle.classList.add('visible'); }, 3000);
   } else {
-    setTimeout(function () { toggle.classList.add('visible'); }, 5000);
+    // Mobile: show after scrolling past Roadmap (Штурм)
+    function checkRoadmapScroll() {
+      var roadmap = document.getElementById('roadmap');
+      if (roadmap) {
+        var rect = roadmap.getBoundingClientRect();
+        if (rect.bottom < window.innerHeight) {
+          toggle.classList.add('visible');
+          window.removeEventListener('scroll', checkRoadmapScroll);
+        }
+      } else if (window.scrollY > 2500) {
+        toggle.classList.add('visible');
+        window.removeEventListener('scroll', checkRoadmapScroll);
+      }
+    }
+    window.addEventListener('scroll', checkRoadmapScroll, { passive: true });
   }
 
   // ─── Attention Pulse ──────────────────────

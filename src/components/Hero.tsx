@@ -110,12 +110,12 @@ export default function Hero() {
     <section className="max-w-7xl mx-auto overflow-hidden">
       {/* ═══════ MOBILE ═══════ */}
       <div className="lg:hidden">
-        {/* Photo — full width, gradient overlay bottom-to-top */}
+        {/* Photo — full width, no gap to navbar */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="relative w-full -mb-20"
+          className="relative w-full -mt-16 -mb-28"
         >
           <img
             src="https://storage.googleapis.com/uspeshnyy-projects/webaudit/soildshield500.jpg"
@@ -124,21 +124,32 @@ export default function Hero() {
             referrerPolicy="no-referrer"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/50 to-transparent" />
-          {/* Slot badge — small, orange, left */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="absolute bottom-24 left-4 bg-orange-500 px-3 py-1.5 rounded-lg shadow-lg shadow-orange-500/30"
-          >
-            <span className="text-white text-[11px] font-black uppercase tracking-wider">1 слот на март</span>
-          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)] via-[var(--bg-body)]/60 to-transparent" />
+
+          {/* Badges row — slot left (pulsing), ready right */}
+          <div className="absolute bottom-32 left-0 right-0 px-4 flex items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ delay: 0.8, duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              className="bg-orange-500 px-3 py-1.5 rounded-lg shadow-lg shadow-orange-500/30"
+            >
+              <span className="text-white text-[11px] font-black uppercase tracking-wider">1 слот на март</span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest"
+            >
+              <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-ping" />
+              Готов к проверкам 2026
+            </motion.div>
+          </div>
         </motion.div>
 
-        {/* Content — overlaps photo via negative margin */}
-        <div className="relative z-10 px-4 pb-10 space-y-6 text-center">
-          {badgeEl}
+        {/* Content — heavily overlapping photo */}
+        <div className="relative z-10 px-4 pb-8 space-y-5 text-center">
           {titleEl('text-[2rem] sm:text-5xl')}
           {tagsEl('justify-center', 'px-3 py-2')}
           {descEl}
@@ -305,16 +316,17 @@ export default function Hero() {
                 </button>
               </div>
 
+              {/* Bottom gradient + scroll hint */}
               <div
                 data-scroll-hint
-                className="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 transition-opacity duration-300 pointer-events-none"
+                className="md:hidden fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-6 pt-20 transition-opacity duration-300 pointer-events-none bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"
               >
-                <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Листайте</span>
+                <span className="text-white/80 text-xs font-bold uppercase tracking-[0.3em]">Листайте</span>
                 <motion.div
                   animate={{ y: [0, 8, 0] }}
                   transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
                 >
-                  <ChevronDown className="w-6 h-6 text-orange-500" />
+                  <ChevronDown className="w-7 h-7 text-orange-500" />
                 </motion.div>
               </div>
             </motion.div>
