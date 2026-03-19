@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowUpRight } from 'lucide-react';
+import { reachGoal } from '../metrika';
 
 const faqs = [
   {
@@ -101,6 +102,24 @@ export default function FAQ() {
           );
         })}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mt-16 pt-12 border-t border-white/5"
+      >
+        <p className="text-slate-400 text-sm mb-6">Готовы защитить свой сайт?</p>
+        <a
+          href="https://t.me/WebAuditRuBot?start=zakazat_audit__faq"
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => reachGoal('telegram_click', { source: 'faq' })}
+          className="inline-flex items-center gap-3 px-10 py-5 bg-orange-600 hover:bg-orange-500 text-white font-black rounded-2xl uppercase text-sm tracking-widest transition-all shadow-xl shadow-orange-600/20 hover:-translate-y-1 active:scale-95"
+        >
+          Заказать аудит <ArrowUpRight className="w-4 h-4" />
+        </a>
+      </motion.div>
     </section>
   );
 }

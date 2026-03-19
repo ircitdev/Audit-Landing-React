@@ -86,12 +86,10 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
     }
 
     return (
-      <motion.div 
+      <div
         key={id}
         onClick={() => onPointClick(point)}
-        whileHover={{ scale: 1.02, x: 4 }}
-        whileTap={{ scale: 0.98 }}
-        className="group relative flex items-center justify-between p-4 md:p-3 text-sm md:text-xs cursor-pointer rounded-xl transition-colors duration-200 bg-white/5 hover:bg-black/40 hover:text-orange-400 border border-transparent active:bg-white/10 md:hover:border-orange-500/30 md:hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] min-h-[44px]"
+        className="group relative flex items-center justify-between p-4 md:p-3 text-sm md:text-xs cursor-pointer rounded-xl transition-all duration-200 bg-white/5 hover:bg-black/40 hover:text-orange-400 border border-transparent active:bg-white/10 md:hover:border-orange-500/30 md:hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] min-h-[44px] hover:scale-[1.02] hover:translate-x-1 active:scale-[0.98]"
       >
         <div className="flex items-center gap-3 pr-2 flex-1">
           <Icon className="w-5 h-5 md:w-4 md:h-4 opacity-70 group-hover:opacity-100 transition-opacity shrink-0" />
@@ -110,7 +108,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             <div className="absolute -bottom-1.5 left-8 w-3 h-3 bg-slate-900/95 border-b border-r border-slate-700/50 rotate-45"></div>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }, [onPointClick]);
 

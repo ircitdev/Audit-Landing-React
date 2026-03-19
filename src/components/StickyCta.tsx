@@ -35,7 +35,7 @@ export default function StickyCta({ onOpenLead }: StickyCtaProps) {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed bottom-0 left-0 right-0 z-[1000] md:hidden"
         >
-          <div className="bg-slate-950/95 backdrop-blur-xl border-t border-white/10 px-4 py-3 flex gap-3">
+          <div className="bg-slate-950/95 backdrop-blur-xl border-t border-white/10 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-3" style={{ background: 'var(--bg-nav)' }}>
             <button
               onClick={() => {
                 reachGoal(METRIKA.goals.leadFormOpen, { source: 'sticky_cta' });

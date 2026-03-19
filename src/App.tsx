@@ -60,9 +60,15 @@ export default function App() {
         
         <Suspense fallback={<div className="h-32 flex items-center justify-center text-orange-500/50">Загрузка...</div>}>
           <DownloadSection />
+        </Suspense>
+        <Suspense fallback={null}>
           <Roadmap />
+        </Suspense>
+        <Suspense fallback={null}>
           <AuditPoints onPointClick={setSelectedPoint} />
           <MarketingAudit />
+        </Suspense>
+        <Suspense fallback={null}>
           <RoiSection />
           <Pricing onOpenLead={handleOpenLead} />
           <FAQ />

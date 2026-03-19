@@ -123,6 +123,9 @@ export default function Hero() {
             className="w-full h-auto object-cover"
             referrerPolicy="no-referrer"
             fetchPriority="high"
+            width={500}
+            height={500}
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)] via-[var(--bg-body)]/60 to-transparent" />
 

@@ -151,13 +151,22 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
                   {leadPackage || 'Заявка'}
                 </h3>
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input name="name" type="text" placeholder="Имя" aria-label="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-                  <input name="company" type="text" placeholder="Компания" aria-label="Компания" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-                  <input name="industry" type="text" placeholder="Сфера деятельности" aria-label="Сфера деятельности" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-                  <input name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-                  <input name="telegram" type="text" placeholder="TG @" aria-label="Telegram" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
-                  <input name="site" type="url" placeholder="Сайт" aria-label="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
-                  <textarea name="message" rows={3} placeholder="Ваш вопрос" aria-label="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none"></textarea>
+                  <input name="name" type="text" placeholder="Имя *" aria-label="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <input name="phone" type="tel" placeholder="Телефон *" aria-label="Телефон" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+                  <input name="site" type="url" placeholder="Сайт *" aria-label="Сайт" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" required />
+
+                  <details className="md:col-span-2 group">
+                    <summary className="text-xs text-slate-500 cursor-pointer hover:text-orange-400 py-2 list-none flex items-center gap-2 select-none">
+                      <span className="text-orange-500 group-open:rotate-90 transition-transform">▶</span>
+                      Дополнительно (необязательно)
+                    </summary>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3">
+                      <input name="company" type="text" placeholder="Компания" aria-label="Компания" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                      <input name="telegram" type="text" placeholder="TG @" aria-label="Telegram" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                      <input name="industry" type="text" placeholder="Сфера деятельности" aria-label="Сфера деятельности" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                      <textarea name="message" rows={2} placeholder="Ваш вопрос" aria-label="Ваш вопрос" className="p-4 rounded-xl text-sm md:col-span-2 w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors resize-none" />
+                    </div>
+                  </details>
 
                   <label className="md:col-span-2 flex items-start gap-3 cursor-pointer mt-2">
                     <input

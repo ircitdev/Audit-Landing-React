@@ -44,38 +44,12 @@ export default function Pricing({ onOpenLead }: PricingProps) {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center mt-4">
-          {/* P2 */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="frosted p-10 md:p-12 flex flex-col border-orange-500 bg-slate-900 shadow-2xl relative overflow-hidden rounded-[3rem] z-10"
-          >
-            <div className="absolute top-8 right-[-50px] rotate-45 bg-orange-600 px-20 py-3 text-[10px] font-black uppercase text-white shadow-xl tracking-widest">
-              Выбор 80%
-            </div>
-            <h3 className="font-heading font-black text-3xl md:text-4xl mb-4 uppercase tracking-tighter text-white">Броня</h3>
-            <p className="text-5xl md:text-6xl font-black text-orange-500 mb-12 tracking-tighter">90 000 ₽</p>
-            <ul className="space-y-6 text-base md:text-lg text-slate-200 mb-12 flex-grow">
-              <li className="flex items-center gap-4"><span className="text-2xl">🚀</span> Правки "под ключ"</li>
-              <li className="flex items-center gap-4"><span className="text-2xl">📜</span> Мониторинг 3 мес.</li>
-              <li className="flex items-center gap-4"><span className="text-2xl">🛡️</span> Сертификат DS</li>
-            </ul>
-            <button 
-              onClick={() => { reachGoal('lead_form_open', { package: 'bronya' }); onOpenLead('Броня'); }}
-              className="w-full bg-orange-600 hover:bg-orange-500 text-white py-6 md:py-8 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-orange-600/20 transition-all active:scale-95"
-            >
-              ВЗЯТЬ ПОД ЗАЩИТУ
-            </button>
-          </motion.div>
-
-          {/* P3 */}
-          <motion.div 
+          {/* P2 — Проект (45к) */}
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
             className="frosted p-10 md:p-12 flex flex-col border-white/5 rounded-[3rem] opacity-90 hover:opacity-100 transition-opacity"
           >
             <h3 className="font-heading font-black text-2xl md:text-3xl mb-4 uppercase tracking-tighter text-slate-300">Проект</h3>
@@ -90,6 +64,32 @@ export default function Pricing({ onOpenLead }: PricingProps) {
               className="w-full py-5 border border-slate-700 hover:border-orange-500 hover:text-orange-500 rounded-[2rem] text-center font-black text-xs uppercase tracking-widest text-white transition-colors"
             >
               ПОЛУЧИТЬ ПЛАН
+            </button>
+          </motion.div>
+
+          {/* P3 — Броня (90к, выбор 80%) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="frosted p-10 md:p-12 flex flex-col border-orange-500 bg-slate-900 shadow-2xl relative overflow-hidden rounded-[3rem] z-10"
+          >
+            <div className="absolute top-8 right-[-50px] rotate-45 bg-orange-600 px-20 py-3 text-[10px] font-black uppercase text-white shadow-xl tracking-widest">
+              Выбор 80%
+            </div>
+            <h3 className="font-heading font-black text-3xl md:text-4xl mb-4 uppercase tracking-tighter text-white">Броня</h3>
+            <p className="text-5xl md:text-6xl font-black text-orange-500 mb-12 tracking-tighter">90 000 ₽</p>
+            <ul className="space-y-6 text-base md:text-lg text-slate-200 mb-12 flex-grow">
+              <li className="flex items-center gap-4"><span className="text-2xl">🚀</span> Правки "под ключ"</li>
+              <li className="flex items-center gap-4"><span className="text-2xl">📜</span> Мониторинг 3 мес.</li>
+              <li className="flex items-center gap-4"><span className="text-2xl">🛡️</span> Сертификат DS</li>
+            </ul>
+            <button
+              onClick={() => { reachGoal('lead_form_open', { package: 'bronya' }); onOpenLead('Броня'); }}
+              className="w-full bg-orange-600 hover:bg-orange-500 text-white py-6 md:py-8 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-orange-600/20 transition-all active:scale-95"
+            >
+              ВЗЯТЬ ПОД ЗАЩИТУ
             </button>
           </motion.div>
         </div>

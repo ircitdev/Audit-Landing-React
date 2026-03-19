@@ -81,6 +81,19 @@ body {
 }
 
 /* ═══════════════════════════════════
+   FOCUS VISIBLE (keyboard navigation)
+   ═══════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ═══════════════════════════════════
    BACKGROUND PATTERN
    ═══════════════════════════════════ */
 
@@ -138,6 +151,16 @@ body {
 [data-theme="light"] .text-slate-300 { color: #334155; }
 [data-theme="light"] .text-slate-400 { color: #64748b; }
 [data-theme="light"] .text-slate-500 { color: #94a3b8; }
+
+/* Preserve light text inside intentionally dark containers */
+[data-theme="light"] .bg-slate-900 .text-white,
+[data-theme="light"] .bg-slate-900 .text-slate-200,
+[data-theme="light"] .bg-slate-900 .text-slate-300,
+[data-theme="light"] .frosted .text-white,
+[data-theme="light"] .frosted .text-slate-200,
+[data-theme="light"] .frosted .text-slate-300 {
+  color: inherit;
+}
 
 /* Background overrides */
 [data-theme="light"] .bg-slate-900,
