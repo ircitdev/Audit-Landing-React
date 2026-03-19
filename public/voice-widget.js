@@ -372,7 +372,7 @@
       }
     } catch (err) {
       hideTypingIndicator();
-      addMessage('ai', 'Извините, произошла ошибка. Попробуйте ещё раз или позвоните: +7 925 148 5560', 'text');
+      addMessage('ai', 'Извините, произошла ошибка. Попробуйте ещё раз или напишите на soldatov@sitechist.ru', 'text');
     } finally {
       isTextProcessing = false; sendBtn.disabled = false;
     }
@@ -468,7 +468,7 @@
     try {
       micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
-      addMessage('ai', 'Нет доступа к микрофону. Используйте текстовый чат или позвоните: +7 925 148 5560', 'voice');
+      addMessage('ai', 'Нет доступа к микрофону. Используйте текстовый чат или напишите на soldatov@sitechist.ru', 'voice');
       cleanupResources(); isActive = false; status = 'idle';
       micBtn.classList.remove('active'); activeControls.style.display = 'none';
       orbContainer.style.display = 'none'; updateStatus('online');
@@ -628,7 +628,7 @@
         micBtn.classList.remove('active');
         activeControls.style.display = 'none'; orbContainer.style.display = 'none';
         stopOrbAnimation(); updateStatus('online');
-        addMessage('ai', 'Не удалось подключиться. Используйте текстовый чат или позвоните: +7 925 148 5560', 'voice');
+        addMessage('ai', 'Не удалось подключиться. Используйте текстовый чат или напишите на soldatov@sitechist.ru', 'voice');
       }
     };
 

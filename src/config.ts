@@ -10,7 +10,7 @@ export const BRAND = {
   domain: 'sitechist.ru',
   url: 'https://sitechist.ru',
   owner: 'Денис Солдатов',
-  phone: '+7 925 148 5560',
+  phone: '', // temporarily hidden
   email: 'soldatov@sitechist.ru',
   tagline: 'Бронежилет для сайта',
 } as const;

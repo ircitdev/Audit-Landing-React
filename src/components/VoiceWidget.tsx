@@ -13,7 +13,7 @@ export default function VoiceWidget() {
     <>
       <style>{`
         .voice-widget {
-          position: fixed; bottom: 1.5rem; right: 1.5rem;
+          position: fixed; bottom: 5.5rem; right: 1rem;
           z-index: 9998; display: flex; flex-direction: column;
           align-items: flex-end; pointer-events: none;
         }
@@ -75,6 +75,9 @@ export default function VoiceWidget() {
           transform-origin: bottom right; padding: 1rem; display: flex; flex-direction: column;
         }
         .voice-widget.open .voice-panel { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
+        @media (min-width: 769px) {
+          .voice-widget { bottom: 1.5rem; right: 1.5rem; }
+        }
         @media (max-width: 480px) {
           .voice-widget { bottom: 0; right: 0; left: 0; align-items: stretch; }
           .voice-chat-messages { max-height: none !important; flex: 1 !important; overflow-y: auto !important; }
@@ -91,7 +94,7 @@ export default function VoiceWidget() {
           .voice-input-row { flex-shrink: 0; }
           .voice-active-controls { flex-shrink: 0; }
           .voice-widget.open .voice-panel { transform: translateY(0) !important; }
-          .voice-toggle { position: fixed; bottom: 1.25rem; right: 1.25rem; }
+          .voice-toggle { position: fixed; bottom: 5.5rem; right: 1rem; }
           .voice-widget.open .voice-toggle { display: none; }
         }
         .voice-panel-close {

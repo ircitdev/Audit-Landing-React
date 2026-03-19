@@ -86,8 +86,7 @@ export default function PrivacyPolicy({ onClose }: PrivacyPolicyProps) {
           <h2 className="text-lg font-black text-white uppercase tracking-tight mt-8">7. Сроки обработки</h2>
           <p>
             Персональные данные обрабатываются до момента отзыва согласия субъектом персональных данных.
-            Для отзыва согласия направьте запрос на адрес электронной почты: soldatov@sitechist.ru
-            или по телефону +7 925 148 5560.
+            Для отзыва согласия направьте запрос на адрес электронной почты: soldatov@sitechist.ru.
           </p>
 
           <h2 className="text-lg font-black text-white uppercase tracking-tight mt-8">8. Права субъекта</h2>
@@ -105,8 +104,7 @@ export default function PrivacyPolicy({ onClose }: PrivacyPolicyProps) {
             ИНН: 770412389456<br />
             ОГРНИП: 324774600298451<br />
             Адрес: 119019, г. Москва, ул. Новый Арбат, д. 15, оф. 401<br />
-            Email: soldatov@sitechist.ru<br />
-            Телефон: +7 925 148 5560
+            Email: soldatov@sitechist.ru
           </p>
 
           <p className="text-slate-500 text-xs mt-12 border-t border-slate-800 pt-6">

@@ -59,7 +59,7 @@ export default function Footer() {
             <p className="text-slate-500 font-bold">ИП Солдатов Денис Алексеевич</p>
             <p>ИНН: 770412389456 &nbsp;|&nbsp; ОГРНИП: 324774600298451</p>
             <p>119019, г. Москва, ул. Новый Арбат, д. 15, оф. 401</p>
-            <p>soldatov@sitechist.ru &nbsp;|&nbsp; +7 925 148 5560</p>
+            <p>soldatov@sitechist.ru</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 items-center text-[11px]">
             <button
