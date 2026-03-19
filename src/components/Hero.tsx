@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { ArrowUpRight, Scale, Code2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowUpRight, Scale, Code2, X } from 'lucide-react';
 import { reachGoal } from '../metrika';
 
 export default function Hero() {
   const [displayText, setDisplayText] = useState("");
   const fullText = "Бронежилет";
   const [isTypingDone, setIsTypingDone] = useState(false);
+  const [isStoryOpen, setIsStoryOpen] = useState(false);
   const [isArticleOpen, setIsArticleOpen] = useState(false);
 
-  // Close iframe on Escape
+  // Close modals on Escape
   useEffect(() => {
-    if (!isArticleOpen) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsArticleOpen(false); };
+    if (!isArticleOpen && !isStoryOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isArticleOpen) setIsArticleOpen(false);
+        else if (isStoryOpen) setIsStoryOpen(false);
+      }
+    };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [isArticleOpen]);
+  }, [isArticleOpen, isStoryOpen]);
 
   useEffect(() => {
     let i = 0;
@@ -106,13 +112,91 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
           </a>
           <button
-            onClick={() => setIsArticleOpen(true)}
-            className="w-full sm:w-auto px-10 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95 active:translate-y-0"
+            onClick={() => setIsStoryOpen(true)}
+            className="w-full sm:w-auto px-8 py-5 md:px-10 md:py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95 active:translate-y-0"
           >
-            История ареста <ArrowUpRight className="w-4 h-4" />
+            Моя история
           </button>
         </motion.div>
 
+      {/* Story Modal */}
+      <AnimatePresence>
+        {isStoryOpen && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+              onClick={() => setIsStoryOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-slate-900 rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-2xl"
+            >
+              <button
+                onClick={() => setIsStoryOpen(false)}
+                aria-label="Закрыть"
+                className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-red-500 text-white transition-colors z-20"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="p-8 md:p-12 space-y-6">
+                <div>
+                  <span className="inline-block px-3 py-1 bg-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/30 mb-4">
+                    Личная история
+                  </span>
+                  <h2 className="text-2xl md:text-4xl font-heading font-black uppercase leading-tight tracking-tight text-white">
+                    От <span className="text-red-500">15 суток ареста</span> до «<span className="text-orange-500">Бронежилета</span>» для вашего сайта
+                  </h2>
+                </div>
+
+                <div className="space-y-4 text-slate-300 text-sm md:text-base leading-relaxed">
+                  <p>
+                    В феврале 2026 года я получил <strong className="text-white">15 суток административного ареста</strong>.
+                  </p>
+                  <p>
+                    Причина? <span className="text-red-400 font-semibold">Один забытый логотип Instagram*</span> в подвале сайта.
+                    Силовики посчитали это «публичной демонстрацией экстремистской символики».
+                  </p>
+                  <p>
+                    Я прошёл через суд и спецприёмник, чтобы <strong className="text-white">вы никогда не проходили через это</strong>.
+                  </p>
+                  <p>Этот момент перевернул мою практику.</p>
+
+                  <div className="border-l-4 border-orange-500 pl-5 py-2 my-6">
+                    <p className="font-black text-white text-base md:text-lg mb-2">Я понял главное:</p>
+                    <p className="text-white font-bold text-base md:text-lg">
+                      Код — это не просто код. Код — это закон.
+                    </p>
+                  </div>
+
+                  <p>
+                    Теперь я превращаю чужие сайты в неприступные крепости: убираю все юридические мины, закрываю дыры в 152-ФЗ и даю <span className="text-orange-400 font-semibold underline underline-offset-4 decoration-orange-500/50">гарантию защиты в суде</span>.
+                  </p>
+
+                  <p className="text-white font-black text-lg md:text-xl mt-6">
+                    Ваш сайт больше не будет причиной ареста или огромного штрафа.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => { setIsStoryOpen(false); setIsArticleOpen(true); }}
+                  className="w-full mt-4 px-8 py-5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-3 transition-all active:scale-95"
+                >
+                  Читать статью об аресте <ArrowUpRight className="w-4 h-4 text-orange-400" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Article iframe */}
       {isArticleOpen && (
         <div className="fixed inset-0 z-[99999] bg-black flex flex-col">
           <button
