@@ -9,6 +9,14 @@ export default function Hero() {
   const [isTypingDone, setIsTypingDone] = useState(false);
   const [isArticleOpen, setIsArticleOpen] = useState(false);
 
+  // Close iframe on Escape
+  useEffect(() => {
+    if (!isArticleOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsArticleOpen(false); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isArticleOpen]);
+
   useEffect(() => {
     let i = 0;
     const timer = setInterval(() => {
@@ -106,19 +114,13 @@ export default function Hero() {
         </motion.div>
 
       {isArticleOpen && (
-        <div
-          className="fixed inset-0 z-[9999] bg-black/90 flex flex-col"
-          onClick={(e) => { if (e.target === e.currentTarget) setIsArticleOpen(false); }}
-        >
-          <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-white/10 flex-shrink-0">
-            <span className="text-white text-sm font-semibold truncate">РИА Новости — История ареста</span>
-            <button
-              onClick={() => setIsArticleOpen(false)}
-              className="text-slate-400 hover:text-white text-2xl leading-none ml-4 flex-shrink-0"
-            >
-              ×
-            </button>
-          </div>
+        <div className="fixed inset-0 z-[99999] bg-black flex flex-col">
+          <button
+            onClick={() => setIsArticleOpen(false)}
+            className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-400 text-white font-black uppercase text-xs tracking-widest transition-colors flex items-center justify-center gap-2 flex-shrink-0"
+          >
+            ← Вернуться на сайт
+          </button>
           <iframe
             src="https://ria.ru/20260224/sud-2076330347.html"
             className="flex-1 w-full border-0"

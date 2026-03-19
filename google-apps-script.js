@@ -17,10 +17,30 @@ const SHEET_ID = '1Y2gxCrbNlT7G9C-FPGPqi4Se5vKzsG28W70wpmKFhfg';
 const LEADS_SHEET = 'Лиды';
 const DASHBOARD_SHEET = 'Дашборд';
 
+const EMAIL_EVENTS_SHEET = 'Email события';
+
 // ===== WEB APP ENDPOINT =====
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
+
+    // Route: email tracking event from Resend webhook
+    if (data._type === 'email_event') {
+      const row = writeEmailEvent(data);
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true, type: 'email_event', row }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Route: inbound email
+    if (data._type === 'inbound_email') {
+      const row = writeInboundEmail(data);
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true, type: 'inbound_email', row }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Route: regular lead
     const row = writeLeadRow(data);
     updateDashboard();
     return ContentService
@@ -33,6 +53,105 @@ function doPost(e) {
   }
 }
 
+// ===== EMAIL СОБЫТИЯ (Resend webhooks) =====
+function writeEmailEvent(data) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName(EMAIL_EVENTS_SHEET);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(EMAIL_EVENTS_SHEET);
+    const headers = ['Дата', 'Время', 'Событие', 'Email', 'Email ID', 'Ссылка клика', 'Raw timestamp'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setBackground('#1a1a2e').setFontColor('#ffffff').setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 100);
+    sheet.setColumnWidth(2, 80);
+    sheet.setColumnWidth(3, 160);
+    sheet.setColumnWidth(4, 200);
+    sheet.setColumnWidth(5, 220);
+    sheet.setColumnWidth(6, 300);
+  }
+
+  const now = new Date();
+  const row = [
+    Utilities.formatDate(now, 'Europe/Moscow', 'dd.MM.yyyy'),
+    Utilities.formatDate(now, 'Europe/Moscow', 'HH:mm:ss'),
+    data.label || data.event || '',
+    data.to || '',
+    data.emailId || '',
+    data.clickUrl || '',
+    data.timestamp || '',
+  ];
+
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  sheet.getRange(lastRow + 1, 1, 1, row.length).setValues([row]);
+
+  // Color-code by event type
+  const newRow = lastRow + 1;
+  const colors = {
+    'email.opened': '#eff6ff',   // blue tint
+    'email.clicked': '#f0fdf4',  // green tint
+    'email.bounced': '#fef2f2',  // red tint
+    'email.complained': '#fefce8', // yellow tint
+  };
+  const bg = colors[data.event] || '#ffffff';
+  sheet.getRange(newRow, 1, 1, row.length).setBackground(bg);
+
+  return newRow;
+}
+
+// ===== ВХОДЯЩИЕ ПИСЬМА =====
+const INBOX_SHEET = 'Входящие письма';
+
+function writeInboundEmail(data) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName(INBOX_SHEET);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(INBOX_SHEET);
+    const headers = ['Дата', 'Время', 'От', 'Кому', 'Тема', 'Текст (превью)', 'Вложения', 'Статус'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setBackground('#1a1a2e').setFontColor('#ffffff').setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 100);
+    sheet.setColumnWidth(2, 80);
+    sheet.setColumnWidth(3, 200);
+    sheet.setColumnWidth(4, 200);
+    sheet.setColumnWidth(5, 300);
+    sheet.setColumnWidth(6, 400);
+    sheet.setColumnWidth(7, 80);
+    sheet.setColumnWidth(8, 120);
+
+    // Статус валидация
+    const statuses = ['Новое', 'Прочитано', 'Отвечено', 'Спам'];
+    const rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(statuses, true)
+      .setAllowInvalid(false)
+      .build();
+    sheet.getRange(2, 8, 1000, 1).setDataValidation(rule);
+  }
+
+  const now = new Date();
+  const row = [
+    Utilities.formatDate(now, 'Europe/Moscow', 'dd.MM.yyyy'),
+    Utilities.formatDate(now, 'Europe/Moscow', 'HH:mm:ss'),
+    data.from || '',
+    data.to || '',
+    data.subject || '',
+    data.bodyPreview || '',
+    data.attachmentsCount || 0,
+    data.status || 'Новое',
+  ];
+
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  sheet.getRange(lastRow + 1, 1, 1, row.length).setValues([row]);
+  sheet.getRange(lastRow + 1, 1, 1, row.length).setBackground('#eff6ff');
+
+  return lastRow + 1;
+}
+
 // ===== ЗАПИСЬ ЛИДА =====
 function writeLeadRow(data) {
   const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -43,8 +162,8 @@ function writeLeadRow(data) {
     sheet = ss.insertSheet(LEADS_SHEET);
     const headers = [
       'Дата', 'Время', 'Тариф', 'Имя', 'Компания', 'Сфера',
-      'Телефон', 'Telegram', 'Сайт', 'Сообщение',
-      'Deep Link', 'utm_source', 'utm_medium', 'utm_campaign',
+      'Телефон', 'Telegram', 'Email', 'Сайт', 'Сообщение',
+      'Deep Link', 'Email ID', 'utm_source', 'utm_medium', 'utm_campaign',
       'utm_content', 'utm_term', 'Referrer', 'Страница',
       'Статус', 'Комментарий менеджера', 'Сумма сделки'
     ];
@@ -60,9 +179,9 @@ function writeLeadRow(data) {
     sheet.setColumnWidth(2, 80);   // Время
     sheet.setColumnWidth(3, 160);  // Тариф
     sheet.setColumnWidth(4, 140);  // Имя
-    sheet.setColumnWidth(19, 120); // Статус
-    sheet.setColumnWidth(20, 250); // Комментарий
-    sheet.setColumnWidth(21, 120); // Сумма
+    sheet.setColumnWidth(21, 120); // Статус
+    sheet.setColumnWidth(22, 250); // Комментарий
+    sheet.setColumnWidth(23, 120); // Сумма
 
     // Выпадающий список для статуса
     setupStatusValidation(sheet);
@@ -79,9 +198,11 @@ function writeLeadRow(data) {
     data.industry || '',
     data.phone || '',
     data.telegram || '',
+    data.email || '',
     data.site || '',
     data.message || '',
     data.deepLink || '',
+    data.emailId || '',
     utm.utm_source || '',
     utm.utm_medium || '',
     utm.utm_campaign || '',
@@ -108,7 +229,7 @@ function writeLeadRow(data) {
 function setupStatusValidation(sheet) {
   const statuses = ['Новый', 'В работе', 'Переговоры', 'Счёт выставлен', 'Оплачен', 'Отказ', 'Отложен'];
   // Применяем на 1000 строк вперёд
-  const statusCol = 19;
+  const statusCol = 21;
   const rule = SpreadsheetApp.newDataValidation()
     .requireValueInList(statuses, true)
     .setAllowInvalid(false)
@@ -130,7 +251,7 @@ function updateDashboard() {
   const leads = ss.getSheetByName(LEADS_SHEET);
   if (!leads || leads.getLastRow() < 2) return;
 
-  const data = leads.getRange(2, 1, leads.getLastRow() - 1, 21).getValues();
+  const data = leads.getRange(2, 1, leads.getLastRow() - 1, 23).getValues();
   const total = data.length;
 
   // Считаем статистику
@@ -142,10 +263,10 @@ function updateDashboard() {
 
   data.forEach(row => {
     const pkg = row[2] || 'Не указан';
-    const source = row[11] || 'Прямой';
-    const status = row[18] || 'Новый';
+    const source = row[13] || 'Прямой';
+    const status = row[20] || 'Новый';
     const date = row[0];
-    const revenue = parseFloat(row[20]) || 0;
+    const revenue = parseFloat(row[22]) || 0;
 
     byStatus[status] = (byStatus[status] || 0) + 1;
     byPackage[pkg] = (byPackage[pkg] || 0) + 1;
@@ -233,6 +354,29 @@ function updateDashboard() {
     dash.getRange(row, 2).setValue(count);
     row++;
   });
+
+  // Email-аналитика
+  const emailSheet = ss.getSheetByName(EMAIL_EVENTS_SHEET);
+  if (emailSheet && emailSheet.getLastRow() > 1) {
+    const emailData = emailSheet.getRange(2, 1, emailSheet.getLastRow() - 1, 7).getValues();
+    const emailStats = {};
+    emailData.forEach(r => {
+      const evt = r[2] || 'unknown';
+      emailStats[evt] = (emailStats[evt] || 0) + 1;
+    });
+
+    row += 1;
+    dash.getRange(row, 1).setValue('EMAIL TRACKING (Resend)').setFontWeight('bold').setFontSize(11);
+    row++;
+    dash.getRange(row, 1).setValue('Событие').setFontWeight('bold');
+    dash.getRange(row, 2).setValue('Кол-во').setFontWeight('bold');
+    row++;
+    Object.entries(emailStats).sort((a, b) => b[1] - a[1]).forEach(([evt, count]) => {
+      dash.getRange(row, 1).setValue(evt);
+      dash.getRange(row, 2).setValue(count);
+      row++;
+    });
+  }
 
   // Ширина колонок
   dash.setColumnWidth(1, 200);

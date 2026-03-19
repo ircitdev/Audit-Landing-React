@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -43,10 +43,62 @@ const steps = [
 
 export default function Roadmap() {
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
+  const [activeScrollStep, setActiveScrollStep] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setActiveScrollStep(null);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find the most visible card
+        let bestEntry: IntersectionObserverEntry | null = null;
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+              bestEntry = entry;
+            }
+          }
+        }
+        if (bestEntry) {
+          const idx = cardRefs.current.indexOf(bestEntry.target as HTMLDivElement);
+          if (idx !== -1) {
+            setActiveScrollStep(steps[idx].num);
+          }
+        }
+      },
+      {
+        threshold: [0.3, 0.5, 0.7, 1.0],
+        rootMargin: '-20% 0px -20% 0px',
+      }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  const isExpanded = (stepNum: number) => {
+    if (isMobile) return activeScrollStep === stepNum;
+    return hoveredStep === stepNum;
+  };
 
   return (
     <section id="roadmap" className="max-w-7xl mx-auto px-6 py-20 md:py-32">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -62,43 +114,44 @@ export default function Roadmap() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
         {steps.map((step, i) => {
-          const isHovered = hoveredStep === step.num;
-          
+          const expanded = isExpanded(step.num);
+
           return (
-            <motion.div 
+            <motion.div
               key={step.num}
+              ref={(el) => { cardRefs.current[i] = el; }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.3 }}
               onHoverStart={() => setHoveredStep(step.num)}
               onHoverEnd={() => setHoveredStep(null)}
-              animate={{ 
-                scale: isHovered ? 1.05 : 1,
-                zIndex: isHovered ? 10 : 1
+              animate={{
+                scale: expanded && !isMobile ? 1.05 : 1,
+                zIndex: expanded ? 10 : 1
               }}
               className={`frosted p-10 rounded-[3rem] flex flex-col items-center text-center cursor-pointer relative overflow-hidden transition-colors duration-300 ${
-                step.active || isHovered 
-                  ? 'border-orange-500/40 bg-slate-900/80 shadow-2xl shadow-orange-500/10' 
+                step.active || expanded
+                  ? 'border-orange-500/40 bg-slate-900/80 shadow-2xl shadow-orange-500/10'
                   : 'border-white/5 bg-slate-900/40'
               }`}
             >
               <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black mb-6 transition-colors duration-300 ${
-                step.active || isHovered 
-                  ? 'bg-orange-500 text-slate-950 shadow-lg shadow-orange-500/30' 
+                step.active || expanded
+                  ? 'bg-orange-500 text-slate-950 shadow-lg shadow-orange-500/30'
                   : 'bg-orange-500/10 text-orange-500'
               }`}>
                 {step.num}
               </div>
               <h3 className="text-xl font-heading font-black uppercase mb-4 tracking-tight">{step.title}</h3>
               <p className={`text-sm leading-relaxed transition-colors duration-300 ${
-                step.active || isHovered ? 'text-slate-200 font-medium' : 'text-slate-400'
+                step.active || expanded ? 'text-slate-200 font-medium' : 'text-slate-400'
               }`}>
                 {step.desc}
               </p>
 
               <AnimatePresence>
-                {isHovered && (
+                {expanded && (
                   <motion.div
                     initial={{ opacity: 0, height: 0, marginTop: 0 }}
                     animate={{ opacity: 1, height: 'auto', marginTop: 24 }}
@@ -109,7 +162,7 @@ export default function Roadmap() {
                     <div className="h-px w-full bg-gradient-to-r from-transparent via-orange-500/30 to-transparent mb-6" />
                     <ul className="space-y-3">
                       {step.details.map((detail, idx) => (
-                        <motion.li 
+                        <motion.li
                           key={idx}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}

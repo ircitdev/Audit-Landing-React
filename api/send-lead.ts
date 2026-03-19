@@ -1,11 +1,10 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { TG, RATE, sendTelegram, sendToSheet } from './config.js';
 
 const router = Router();
 
-// Simple in-memory rate limiter: max 5 requests per IP per hour
+// Simple in-memory rate limiter
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 5;
-const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
 
 function rateLimit(req: Request, res: Response, next: NextFunction) {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
@@ -13,11 +12,11 @@ function rateLimit(req: Request, res: Response, next: NextFunction) {
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE.windowMs });
     return next();
   }
 
-  if (entry.count >= RATE_LIMIT) {
+  if (entry.count >= RATE.maxRequests) {
     return res.status(429).json({ ok: false, error: 'Too many requests' });
   }
 
@@ -32,11 +31,6 @@ setInterval(() => {
     if (now > entry.resetAt) rateLimitMap.delete(ip);
   }
 }, 10 * 60 * 1000);
-
-const API_TOKEN = process.env.TG_BOT_TOKEN || '';
-const CHAT_ID = process.env.TG_CHAT_ID || '';
-const THREAD_ID = process.env.TG_THREAD_ID || '';
-const SHEET_WEBHOOK = process.env.GOOGLE_SHEET_WEBHOOK || '';
 
 interface LeadBody {
   package?: string;
@@ -86,65 +80,36 @@ function formatMessage(body: LeadBody): string {
   return lines.join('\n');
 }
 
-async function sendToTelegram(text: string) {
-  const payload: Record<string, unknown> = {
-    chat_id: CHAT_ID,
-    text,
-    parse_mode: 'Markdown',
-  };
-  if (THREAD_ID) payload.message_thread_id = Number(THREAD_ID);
-
-  return fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-}
-
-async function sendToSheet(body: LeadBody) {
-  if (!SHEET_WEBHOOK) return;
-  try {
-    await fetch(SHEET_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-  } catch {
-    // Sheet write is best-effort, don't block Telegram send
-  }
-}
-
 router.post('/api/send-lead', rateLimit, async (req, res) => {
   const body: LeadBody = req.body;
 
-  if (!body.name || !API_TOKEN || !CHAT_ID) {
+  if (!body.name || !TG.botToken || !TG.chatId) {
     return res.status(400).json({ ok: false, error: 'Missing data' });
   }
 
   const text = formatMessage(body);
 
   try {
-    // Send to Telegram and Google Sheet in parallel
     const [tgResponse] = await Promise.all([
-      sendToTelegram(text),
+      sendTelegram(text),
       sendToSheet(body),
     ]);
 
-    if (tgResponse.ok) {
+    if (tgResponse?.ok) {
       return res.json({ ok: true });
     }
 
-    const err = await tgResponse.text();
+    const err = await tgResponse?.text();
     return res.status(502).json({ ok: false, error: err });
   } catch (e) {
     return res.status(500).json({ ok: false, error: 'Server error' });
   }
 });
 
-// AI widget: bot notification (user clicked through to bot)
+// AI widget: bot notification
 router.post('/api/ai-notify', rateLimit, async (req, res) => {
   const { mode } = req.body || {};
-  if (!API_TOKEN || !CHAT_ID) return res.status(500).json({ ok: false });
+  if (!TG.botToken || !TG.chatId) return res.status(500).json({ ok: false });
 
   const modeLabel = mode === 'voice' ? '🎙 голосовой' : '💬 текстовый';
   const lines = [
@@ -156,20 +121,9 @@ router.post('/api/ai-notify', rateLimit, async (req, res) => {
     `📅 ${new Date().toLocaleString('ru-RU')}`,
   ];
 
-  const payload: Record<string, unknown> = {
-    chat_id: CHAT_ID,
-    text: lines.join('\n'),
-    parse_mode: 'HTML',
-  };
-  if (THREAD_ID) payload.message_thread_id = Number(THREAD_ID);
-
   try {
-    const r = await fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return r.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
+    const r = await sendTelegram(lines.join('\n'), 'HTML');
+    return r?.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
   } catch {
     return res.status(500).json({ ok: false });
   }
@@ -178,7 +132,7 @@ router.post('/api/ai-notify', rateLimit, async (req, res) => {
 // AI widget: lead from chat/voice form
 router.post('/api/ai-lead', rateLimit, async (req, res) => {
   const { name, phone, site } = req.body || {};
-  if (!API_TOKEN || !CHAT_ID) return res.status(500).json({ ok: false });
+  if (!TG.botToken || !TG.chatId) return res.status(500).json({ ok: false });
 
   const esc = (s: string) => String(s || '—').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const lines = [
@@ -191,23 +145,12 @@ router.post('/api/ai-lead', rateLimit, async (req, res) => {
     `📅 ${esc(new Date().toLocaleString('ru-RU'))}`,
   ];
 
-  const payload: Record<string, unknown> = {
-    chat_id: CHAT_ID,
-    text: lines.join('\n'),
-    parse_mode: 'HTML',
-  };
-  if (THREAD_ID) payload.message_thread_id = Number(THREAD_ID);
-
   try {
     const [tgResponse] = await Promise.all([
-      fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      }),
+      sendTelegram(lines.join('\n'), 'HTML'),
       sendToSheet({ name, phone, site, package: 'AI-консультант' }),
     ]);
-    return tgResponse.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
+    return tgResponse?.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
   } catch {
     return res.status(500).json({ ok: false });
   }

@@ -49,8 +49,8 @@ interface AuditPointsProps {
 export default function AuditPoints({ onPointClick }: AuditPointsProps) {
   const [showExtraLaw, setShowExtraLaw] = useState(false);
 
-  const lawPoints = [1, 2, 3, 4, 5, 6];
-  const extraLawPoints = [25, 26, 27, 30, 31, 32, 28, 29];
+  const lawPoints = [1, 2, 3, 4];
+  const extraLawPoints = [5, 6, 25, 26, 27, 28, 29, 30, 31, 32];
   const protectionPoints = [7, 8, 9, 10, 11, 12];
   const speedPoints = [13, 14, 15, 16, 17, 18];
   const seoPoints = [19, 20, 21, 22, 23, 24];
@@ -136,7 +136,8 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="frosted p-6 md:p-8 border-t-4 border-t-red-500 rounded-[2rem] md:rounded-[2.5rem] flex flex-col"
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            className="frosted p-6 md:p-8 border-t-4 border-t-red-500 rounded-[2rem] md:rounded-[2.5rem] flex flex-col transition-shadow duration-300 hover:shadow-[0_20px_40px_-15px_rgba(239,68,68,0.2)]"
           >
             <h3 className="font-heading font-black text-xl text-red-500 uppercase mb-6">ЗАКОН</h3>
             <div className="space-y-2 flex-grow">
@@ -155,7 +156,7 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
               onClick={() => setShowExtraLaw(!showExtraLaw)}
               className="mt-6 w-full py-4 md:py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] md:text-xs font-black uppercase tracking-widest rounded-xl border border-red-500/20 transition-all min-h-[44px]"
             >
-              {showExtraLaw ? 'Скрыть' : 'Показать еще 8'}
+              {showExtraLaw ? 'Скрыть' : 'Показать еще 10'}
             </button>
           </motion.div>
 
@@ -165,7 +166,8 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="frosted p-6 md:p-8 border-t-4 border-t-sky-500 rounded-[2rem] md:rounded-[2.5rem]"
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            className="frosted p-6 md:p-8 border-t-4 border-t-sky-500 rounded-[2rem] md:rounded-[2.5rem] transition-shadow duration-300 hover:shadow-[0_20px_40px_-15px_rgba(56,189,248,0.2)]"
           >
             <h3 className="font-heading font-black text-xl text-sky-400 uppercase mb-6">ЗАЩИТА</h3>
             <div className="space-y-2">
@@ -179,7 +181,8 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="frosted p-6 md:p-8 border-t-4 border-t-emerald-500 rounded-[2rem] md:rounded-[2.5rem]"
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            className="frosted p-6 md:p-8 border-t-4 border-t-emerald-500 rounded-[2rem] md:rounded-[2.5rem] transition-shadow duration-300 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.2)]"
           >
             <h3 className="font-heading font-black text-xl text-emerald-400 uppercase mb-6">СКОРОСТЬ</h3>
             <div className="space-y-2">
@@ -193,7 +196,8 @@ export default function AuditPoints({ onPointClick }: AuditPointsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="frosted p-6 md:p-8 border-t-4 border-t-purple-500 rounded-[2rem] md:rounded-[2.5rem]"
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            className="frosted p-6 md:p-8 border-t-4 border-t-purple-500 rounded-[2rem] md:rounded-[2.5rem] transition-shadow duration-300 hover:shadow-[0_20px_40px_-15px_rgba(168,85,247,0.2)]"
           >
             <h3 className="font-heading font-black text-xl text-purple-400 uppercase mb-6">РОСТ (SEO)</h3>
             <div className="space-y-2">

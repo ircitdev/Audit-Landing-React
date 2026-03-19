@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import leadRouter from './api/send-lead.js';
+import pdfRouter from './api/send-pdf.js';
+import inboundRouter from './api/inbound-email.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -9,6 +11,8 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(leadRouter);
+app.use(pdfRouter);
+app.use(inboundRouter);
 app.use(express.static(path.join(__dirname, 'dist')));
 app.get('*', (_req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
 

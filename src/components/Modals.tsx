@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
 import { reachGoal } from '../metrika';
 import { AuditPoint } from '../types';
+import { API, TELEGRAM, METRIKA, getUtmParams, packageSlug } from '../config';
 
 interface ModalsProps {
   isLeadOpen: boolean;
@@ -11,24 +12,6 @@ interface ModalsProps {
   selectedPoint: AuditPoint | null;
   onClosePoint: () => void;
 }
-
-const packageSlug = (pkg: string) => {
-  if (pkg.includes('Разведка')) return 'razvedka';
-  if (pkg.includes('Проект')) return 'proekt';
-  if (pkg.includes('Броня')) return 'bronya';
-  return 'general';
-};
-
-const getUtmParams = () => {
-  const params = new URLSearchParams(window.location.search);
-  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
-  const utm: Record<string, string> = {};
-  for (const key of utmKeys) {
-    const val = params.get(key);
-    if (val) utm[key] = val;
-  }
-  return utm;
-};
 
 export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedPoint, onClosePoint }: ModalsProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -66,10 +49,10 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
     const data = Object.fromEntries(formData.entries());
     const utm = getUtmParams();
     const slug = packageSlug(leadPackage);
-    const deepLink = `https://t.me/WebAuditRuBot?start=free_audit__${slug}`;
+    const deepLink = TELEGRAM.deepLink('free_audit', slug);
 
     try {
-      const response = await fetch('/api/send-lead', {
+      const response = await fetch(API.sendLead, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,7 +127,7 @@ export default function Modals({ isLeadOpen, leadPackage, onCloseLead, selectedP
                     Пока ждёте — пройдите <span className="text-sky-400 font-bold">бесплатный экспресс-аудит</span> вашего сайта в нашем Telegram-боте. Это займёт 2 минуты.
                   </p>
                   <a
-                    href={`https://t.me/WebAuditRuBot?start=free_audit__${packageSlug(leadPackage)}`}
+                    href={TELEGRAM.deepLink('free_audit', packageSlug(leadPackage))}
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => reachGoal('telegram_click', { source: 'post_submit_bot' })}
