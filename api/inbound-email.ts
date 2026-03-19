@@ -12,7 +12,7 @@ const router = Router();
  *   "created_at": "...",
  *   "data": {
  *     "from": "sender@example.com",
- *     "to": ["info@sitechist.ru"],
+ *     "to": ["soldatov@sitechist.ru"],
  *     "subject": "...",
  *     "text": "plain text body",
  *     "html": "<html>...</html>",

@@ -395,7 +395,7 @@ Google Sheets лист "Email события"
 ### Входящая почта
 
 ```
-Письмо на info@sitechist.ru
+Письмо на soldatov@sitechist.ru
     ↓
 Resend Inbound → POST /api/inbound-email
     ↓
@@ -546,7 +546,7 @@ SMTP_HOST=smtp.resend.com
 SMTP_PORT=465
 SMTP_USER=resend
 SMTP_PASS=             # Resend API key (re_xxx)
-SMTP_FROM=СайтЧИСТ <info@sitechist.ru>
+SMTP_FROM=СайтЧИСТ <soldatov@sitechist.ru>
 RESEND_WEBHOOK_SECRET= # Для валидации webhooks (опционально)
 ```
 

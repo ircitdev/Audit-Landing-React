@@ -31,8 +31,8 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
-      <div className="space-y-8 md:space-y-10 text-center lg:text-left">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center overflow-hidden">
+      <div className="space-y-8 md:space-y-10 text-center lg:text-left overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export default function Hero() {
           Compliance 2026 Ready
         </motion.div>
         
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black leading-[1.1] tracking-tighter uppercase">
+        <h1 className="text-[2.2rem] sm:text-5xl md:text-7xl font-heading font-black leading-[1.1] tracking-tighter uppercase">
           <span className="inline-block">{displayText}</span>
           <motion.span 
             animate={{ opacity: [1, 0] }} 
@@ -147,7 +147,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
-          className="absolute -bottom-6 -right-4 md:-bottom-10 md:-right-10 frosted p-6 md:p-10 border-orange-500/40 shadow-2xl rounded-[2.5rem] md:rounded-[3rem]"
+          className="absolute -bottom-6 right-2 md:-bottom-10 md:-right-10 frosted p-4 md:p-10 border-orange-500/40 shadow-2xl rounded-2xl md:rounded-[3rem]"
         >
           <p className="text-[10px] md:text-[12px] font-black uppercase text-slate-400 mb-1 text-center">Слот на март</p>
           <p className="text-2xl md:text-4xl font-black text-orange-500 uppercase text-center animate-pulse">Остался: 1</p>

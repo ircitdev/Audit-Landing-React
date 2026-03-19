@@ -22,7 +22,7 @@ export const SHEETS = {
 export const RESEND = {
   apiKey: process.env.SMTP_PASS || '',       // re_xxx ключ
   webhookSecret: process.env.RESEND_WEBHOOK_SECRET || '',
-  from: process.env.SMTP_FROM || 'СайтЧИСТ <info@sitechist.ru>',
+  from: process.env.SMTP_FROM || 'СайтЧИСТ <soldatov@sitechist.ru>',
 } as const;
 
 // ===== PDF & DEEP LINKS =====
