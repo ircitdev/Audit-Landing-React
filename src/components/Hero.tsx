@@ -42,7 +42,7 @@ export default function Hero() {
           Compliance 2026 Ready
         </motion.div>
         
-        <h1 className="text-[2.2rem] sm:text-5xl md:text-7xl font-heading font-black leading-[1.1] tracking-tighter uppercase">
+        <h1 className="text-[1.75rem] xs:text-[2.2rem] sm:text-5xl md:text-7xl font-heading font-black leading-[1.1] tracking-tighter uppercase break-words">
           <span className="inline-block">{displayText}</span>
           <motion.span 
             animate={{ opacity: [1, 0] }} 
@@ -67,16 +67,16 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center lg:justify-start gap-3 md:gap-4"
+          className="flex flex-wrap items-center justify-center lg:justify-start gap-2 md:gap-4"
         >
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md">
-            <Scale className="w-5 h-5 text-orange-400" />
-            <span className="text-sm md:text-base font-bold text-slate-200 tracking-wide">Юрист</span>
+          <div className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md">
+            <Scale className="w-4 h-4 md:w-5 md:h-5 text-orange-400 shrink-0" />
+            <span className="text-xs md:text-base font-bold text-slate-200">Юрист</span>
           </div>
-          <span className="text-slate-500 font-black text-xl">+</span>
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md">
-            <Code2 className="w-5 h-5 text-sky-400" />
-            <span className="text-sm md:text-base font-bold text-slate-200 tracking-wide">Senior Developer</span>
+          <span className="text-slate-500 font-black text-lg md:text-xl">+</span>
+          <div className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-lg shadow-black/20 backdrop-blur-md">
+            <Code2 className="w-4 h-4 md:w-5 md:h-5 text-sky-400 shrink-0" />
+            <span className="text-xs md:text-base font-bold text-slate-200">Senior Dev</span>
           </div>
         </motion.div>
         
@@ -84,7 +84,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isTypingDone ? 1 : 0, y: isTypingDone ? 0 : 20 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-lg md:text-xl text-slate-300 max-w-lg leading-relaxed font-light"
+          className="text-base md:text-xl text-slate-300 max-w-lg mx-auto lg:mx-0 leading-relaxed font-light"
         >
           Уникальный тандем. Ликвидируем 32 уязвимости, за которые силовики блокируют бизнес и арестовывают владельцев.
         </motion.p>
@@ -100,7 +100,7 @@ export default function Hero() {
             target="_blank"
             rel="noreferrer"
             onClick={() => reachGoal('telegram_click', { source: 'hero' })}
-            className="w-full sm:w-auto inline-block px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-base md:text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 active:translate-y-0 relative overflow-hidden group text-center"
+            className="w-full sm:w-auto inline-block px-8 py-5 md:px-12 md:py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-sm md:text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 active:translate-y-0 relative overflow-hidden group text-center"
           >
             <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />

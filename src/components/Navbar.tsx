@@ -31,7 +31,7 @@ export default function Navbar() {
           onClick={() => reachGoal('telegram_click', { source: 'navbar' })}
           target="_blank"
           rel="noreferrer"
-          className="bg-orange-600 hover:bg-orange-500 px-6 py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-orange-600/20 text-white transition-all active:scale-95"
+          className="bg-orange-600 hover:bg-orange-500 px-4 py-2.5 md:px-6 md:py-3 rounded-xl text-[10px] md:text-xs font-black uppercase shadow-lg shadow-orange-600/20 text-white transition-all active:scale-95 shrink-0 whitespace-nowrap"
         >
           SOS АУДИТ
         </a>
