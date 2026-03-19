@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Menu, X } from 'lucide-react';
+import { Shield, Menu, X, Sun, Moon } from 'lucide-react';
 import { reachGoal } from '../metrika';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTheme } from './ThemeProvider';
 
 const menuItems = [
   { href: '#audit', label: '32 Пункта' },
@@ -12,6 +13,7 @@ const menuItems = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -64,11 +66,22 @@ export default function Navbar() {
               SOS АУДИТ
             </a>
 
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {/* Burger button — mobile only */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white hover:bg-white/10 transition-colors"
+              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+              style={{ color: 'var(--text-primary)' }}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>

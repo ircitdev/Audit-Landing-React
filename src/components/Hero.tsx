@@ -170,7 +170,7 @@ export default function Hero() {
       </div>
 
       {/* ═══════ DESKTOP ═══════ */}
-      <div className="hidden lg:grid grid-cols-2 gap-24 items-center px-6 py-24">
+      <div className="hidden lg:grid grid-cols-2 gap-24 items-center px-6 min-h-[calc(100vh-5rem)]">
         <div className="space-y-10 text-left">
           {badgeEl}
           {titleEl('text-7xl')}
