@@ -157,6 +157,7 @@ router.post('/api/ai-lead', rateLimit, async (req, res) => {
     }
   }
 
+  if (body.deepLink) lines.push(`🔗 <b>Deep link:</b> ${esc(body.deepLink)}`);
   if (body.referrer) lines.push(`↩️ <b>Referrer:</b> ${esc(body.referrer)}`);
   if (body.page)     lines.push(`📄 <b>Страница:</b> ${esc(body.page)}`);
 
@@ -171,6 +172,7 @@ router.post('/api/ai-lead', rateLimit, async (req, res) => {
     company: body.company,
     site: body.site,
     message: body.message || body.interest,
+    deepLink: body.deepLink,
     utm: body.utm,
     referrer: body.referrer,
     page: body.page,

@@ -139,6 +139,9 @@
   }
 
   function sendLeadToTelegram(data) {
+    var utmParams = getUtmParams();
+    var source = utmParams.utm_source || 'direct';
+    var deepLink = 'https://t.me/WebAuditRuBot?start=ai_lead__' + source;
     var payload = {
       name: data.name,
       phone: data.phone,
@@ -147,7 +150,8 @@
       site: data.site,
       message: data.message,
       interest: data.interest,
-      utm: getUtmParams(),
+      deepLink: deepLink,
+      utm: utmParams,
       referrer: document.referrer || null,
       page: window.location.href,
     };
@@ -172,7 +176,7 @@
       wrap.remove();
       sendBotNotification('text');
       addMessage('ai', '✅ Открываю бота...', 'text');
-      setTimeout(function () { window.open('https://t.me/WebAuditRuBot?start=ai_consultant', '_blank'); }, 400);
+      setTimeout(function () { window.open('https://t.me/WebAuditRuBot?start=ai_audit__' + (getUtmParams().utm_source || 'direct'), '_blank'); }, 400);
     };
     wrap.appendChild(btn);
     chatContainer.appendChild(wrap);
@@ -564,7 +568,7 @@
               try { session.send(JSON.stringify(toolResp0)); } catch (e) {}
               addMessage('ai', '✅ Открываю бота...', 'voice');
               sendBotNotification('voice');
-              setTimeout(function () { window.open('https://t.me/WebAuditRuBot?start=ai_consultant', '_blank'); }, 800);
+              setTimeout(function () { window.open('https://t.me/WebAuditRuBot?start=ai_audit__' + (getUtmParams().utm_source || 'direct'), '_blank'); }, 800);
               return;
             }
             if (fcs[j].name === 'submitLead' && !voiceLeadSent) {
