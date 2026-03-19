@@ -11,50 +11,22 @@
   var PROXY_WS_URL = 'wss://sitechist.ru/ws-gemini';
   // Telegram notifications go through server API (token is server-side only)
 
-  // ─── System Prompt ────────────────────────
-  var SYSTEM_INSTRUCTION = [
-    'Ты — AI-консультант сервиса «СайтЧИСТ!» (sitechist.ru). Говори по-русски. Будь дружелюбным, профессиональным и кратким.',
-    'ВАЖНО: произноси название как «Сайт Чист».',
-    '',
-    '=== О СЕРВИСЕ ===',
-    'Название: СайтЧИСТ! Сайт: sitechist.ru. Телефон: +7 925 148 5560.',
-    'Основатель: Денис Солдатов — юрист + senior developer.',
-    'Уникальный тандем юриста и разработчика. Ликвидируем 32 уязвимости, за которые силовики блокируют бизнес и арестовывают владельцев.',
-    '',
-    '=== КЛЮЧЕВЫЕ РИСКИ ===',
-    '152-ФЗ — до 18 000 000 ₽ штраф (с 2025)',
-    'ч. 1 ст. 20.3 КоАП — арест до 15 суток за экстремистскую символику на сайте',
-    'ФЗ №41 — до 6 000 000 ₽ за передачу ПДн на иностранные ресурсы',
-    '149-ФЗ — до 1 000 000 ₽',
-    '436-ФЗ — до 200 000 ₽ за отсутствие возрастной маркировки',
-    '',
-    '=== БЕСПЛАТНЫЙ АУДИТ ===',
-    'Мы предлагаем БЕСПЛАТНЫЙ экспресс-аудит сайта в Telegram-боте.',
-    'Проверяем 32 пункта: 152-ФЗ, КоАП, SSL, SEO, скорость, маркировка рекламы и др.',
-    'Результат — персональный отчёт с нарушениями и рисками за 24 часа.',
-    'Это полностью бесплатно и ни к чему не обязывает.',
-    '',
-    '=== ТВОЯ ЕДИНСТВЕННАЯ ЦЕЛЬ ===',
-    'Направить посетителя пройти БЕСПЛАТНЫЙ аудит в Telegram-боте — вызови redirectToBot().',
-    '',
-    'ВОРОНКА РАЗГОВОРА:',
-    'Шаг 1. Поздоровайся. Спроси: есть ли у них сайт.',
-    'Шаг 2. Если есть — расскажи про риски (штрафы до 18 млн ₽, арест владельца).',
-    'Шаг 3. Предложи: "Давайте прямо сейчас бесплатно проверим ваш сайт — это займёт 2 минуты в боте. Хотите?"',
-    'Шаг 4. При любом согласии — НЕМЕДЛЕННО вызови redirectToBot().',
-    '',
-    'ФРАЗА ДЛЯ ПРЕДЛОЖЕНИЯ АУДИТА:',
-    '"У нас есть бесплатный аудит сайта — проверяем 32 пункта прямо в Telegram за 2 минуты. Многие владельцы сайтов не знают, что им грозит штраф до 18 миллионов или даже арест. Хотите проверить свой сайт прямо сейчас?"',
-    '',
-    'ПРАВИЛА:',
-    '— Отвечай кратко — максимум 2-3 предложения за раз.',
-    '— Говори "назовите", "скажите", а НЕ "введите", "напишите" — это может быть голосовой режим.',
-    '— Каждый ответ заканчивай вопросом или предложением пройти аудит.',
-    '— НИКОГДА не называй ссылки, адреса ботов, URL в тексте. Только вызывай redirectToBot() и говори "Открываю бота".',
-    '— Если человек говорит "да", "хочу", "давайте", "интересно" или любое согласие — СРАЗУ вызови redirectToBot() без лишних слов.',
-    '— Если спрашивают о платных тарифах — коротко расскажи, но всё равно предложи начать с бесплатного аудита.',
-    '— Если нет сайта — скажи что аудит пока не нужен, но предложи обратиться когда сайт появится.',
-  ].join('\n');
+  // ─── System Prompt (loaded from external file) ────────────────────────
+  var SYSTEM_INSTRUCTION = '';
+  var promptLoaded = false;
+
+  function loadPrompt(cb) {
+    if (promptLoaded) { cb(); return; }
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/ai-consultant-prompt.txt', true);
+    xhr.onload = function () {
+      if (xhr.status === 200) SYSTEM_INSTRUCTION = xhr.responseText;
+      promptLoaded = true;
+      cb();
+    };
+    xhr.onerror = function () { promptLoaded = true; cb(); };
+    xhr.send();
+  }
 
   // ─── DOM Elements ─────────────────────────
   var widget = document.getElementById('voiceWidget');
@@ -105,8 +77,20 @@
   var isTextProcessing = false;
   var CHAT_STORAGE_KEY = 'sitechistAiChatHistory';
 
+  // ─── UTM & Page Context ──────────────────
+  function getUtmParams() {
+    var params = new URLSearchParams(window.location.search);
+    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+    var utm = {};
+    for (var i = 0; i < keys.length; i++) {
+      var val = params.get(keys[i]);
+      if (val) utm[keys[i]] = val;
+    }
+    return utm;
+  }
+
   // ─── Lead Data ────────────────────────────
-  var leadData = { name: null, phone: null, site: null };
+  var leadData = { name: null, phone: null, email: null, company: null, site: null, message: null, interest: null };
   var voiceLeadSent = false;
 
   // ─── Audio Utilities ──────────────────────
@@ -155,10 +139,22 @@
   }
 
   function sendLeadToTelegram(data) {
+    var payload = {
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      company: data.company,
+      site: data.site,
+      message: data.message,
+      interest: data.interest,
+      utm: getUtmParams(),
+      referrer: document.referrer || null,
+      page: window.location.href,
+    };
     return fetch('/api/ai-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: data.name, phone: data.phone, site: data.site }),
+      body: JSON.stringify(payload),
     }).then(function(r) { return r.json(); }).catch(function(e) { console.error('[AI lead] error:', e); });
   }
 
@@ -271,14 +267,16 @@
   }
 
   toggle.addEventListener('click', function () {
-    isOpen = !isOpen;
-    widget.classList.toggle('open', isOpen);
-    syncBodyScroll();
-    if (isOpen && firstOpen) {
-      firstOpen = false; playOpenSound(); hasGreeted = true;
-      if (!isActive) connect();
-    }
-    if (!isOpen && isActive) stopConnection();
+    loadPrompt(function () {
+      isOpen = !isOpen;
+      widget.classList.toggle('open', isOpen);
+      syncBodyScroll();
+      if (isOpen && firstOpen) {
+        firstOpen = false; playOpenSound(); hasGreeted = true;
+        if (!isActive) connect();
+      }
+      if (!isOpen && isActive) stopConnection();
+    });
   });
 
   panelClose.addEventListener('click', function () {
@@ -306,20 +304,23 @@
         tools: [{ function_declarations: [
           {
             name: 'submitLead',
-            description: 'Отправить заявку клиента. Вызывай только после подтверждения данных.',
+            description: 'Отправить заявку клиента. Вызывай когда клиент назвал хотя бы имя и телефон или email. Собирай данные постепенно в разговоре.',
             parameters: {
               type: 'OBJECT',
               properties: {
                 name: { type: 'STRING', description: 'Имя клиента' },
                 phone: { type: 'STRING', description: 'Телефон клиента' },
+                email: { type: 'STRING', description: 'Email клиента' },
+                company: { type: 'STRING', description: 'Название компании' },
                 site: { type: 'STRING', description: 'Адрес сайта клиента' },
+                interest: { type: 'STRING', description: 'Что интересует клиента: какой тариф, какая проблема' },
               },
-              required: ['name', 'phone'],
+              required: ['name'],
             },
           },
           {
             name: 'redirectToBot',
-            description: 'Перенаправить клиента в Telegram-бота @WebAuditRuBot.',
+            description: 'Перенаправить клиента в Telegram-бота @WebAuditRuBot для бесплатного аудита.',
             parameters: { type: 'OBJECT', properties: {} },
           },
         ]}],
@@ -344,9 +345,16 @@
             var args = part.functionCall.args || {};
             leadData.name = args.name || leadData.name;
             leadData.phone = args.phone || leadData.phone;
+            leadData.email = args.email || leadData.email;
+            leadData.company = args.company || leadData.company;
             leadData.site = args.site || leadData.site;
+            leadData.interest = args.interest || leadData.interest;
             sendLeadToTelegram(leadData);
-            var msg = '✅ Заявка принята!\n👤 ' + (leadData.name || '') + '\n📞 ' + (leadData.phone || '');
+            var msg = '✅ Заявка принята!';
+            if (leadData.name) msg += '\n👤 ' + leadData.name;
+            if (leadData.phone) msg += '\n📞 ' + leadData.phone;
+            if (leadData.email) msg += '\n📧 ' + leadData.email;
+            if (leadData.company) msg += '\n🏢 ' + leadData.company;
             if (leadData.site) msg += '\n🌐 ' + leadData.site;
             msg += '\n\nДенис свяжется с вами в ближайшее время.';
             addMessage('ai', msg, 'text'); hasText = true;

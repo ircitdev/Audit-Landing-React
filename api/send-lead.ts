@@ -129,26 +129,57 @@ router.post('/api/ai-notify', rateLimit, async (req, res) => {
   }
 });
 
-// AI widget: lead from chat/voice form
+// AI widget: lead from chat/voice form (full lead with UTM)
 router.post('/api/ai-lead', rateLimit, async (req, res) => {
-  const { name, phone, site } = req.body || {};
+  const body = req.body || {};
   if (!TG.botToken || !TG.chatId) return res.status(500).json({ ok: false });
 
-  const esc = (s: string) => String(s || '—').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const esc = (s: string) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const lines = [
     '🤖 <b>Заявка от AI-консультанта — СайтЧИСТ!</b>',
     '',
-    `👤 <b>Имя:</b> ${esc(name)}`,
-    `📞 <b>Телефон:</b> ${esc(phone)}`,
-    `🌐 <b>Сайт:</b> ${esc(site)}`,
-    '',
-    `📅 ${esc(new Date().toLocaleString('ru-RU'))}`,
   ];
+
+  if (body.name)     lines.push(`👤 <b>Имя:</b> ${esc(body.name)}`);
+  if (body.phone)    lines.push(`📞 <b>Телефон:</b> ${esc(body.phone)}`);
+  if (body.email)    lines.push(`📧 <b>Email:</b> ${esc(body.email)}`);
+  if (body.company)  lines.push(`🏢 <b>Компания:</b> ${esc(body.company)}`);
+  if (body.site)     lines.push(`🌐 <b>Сайт:</b> ${esc(body.site)}`);
+  if (body.message)  lines.push(`✉️ <b>Вопрос:</b> ${esc(body.message)}`);
+  if (body.interest) lines.push(`🎯 <b>Интерес:</b> ${esc(body.interest)}`);
+
+  const utm = body.utm;
+  if (utm && Object.keys(utm).length > 0) {
+    lines.push('');
+    lines.push('📊 <b>UTM-метки:</b>');
+    for (const [key, val] of Object.entries(utm)) {
+      lines.push(`  • ${key}: <code>${esc(String(val))}</code>`);
+    }
+  }
+
+  if (body.referrer) lines.push(`↩️ <b>Referrer:</b> ${esc(body.referrer)}`);
+  if (body.page)     lines.push(`📄 <b>Страница:</b> ${esc(body.page)}`);
+
+  lines.push('');
+  lines.push(`📅 ${esc(new Date().toLocaleString('ru-RU'))}`);
+
+  const sheetData = {
+    package: 'AI-консультант',
+    name: body.name,
+    phone: body.phone,
+    email: body.email,
+    company: body.company,
+    site: body.site,
+    message: body.message || body.interest,
+    utm: body.utm,
+    referrer: body.referrer,
+    page: body.page,
+  };
 
   try {
     const [tgResponse] = await Promise.all([
       sendTelegram(lines.join('\n'), 'HTML'),
-      sendToSheet({ name, phone, site, package: 'AI-консультант' }),
+      sendToSheet(sheetData),
     ]);
     return tgResponse?.ok ? res.json({ ok: true }) : res.status(502).json({ ok: false });
   } catch {
