@@ -60,27 +60,35 @@ export default function Roadmap() {
       return;
     }
 
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    const visibilityMap = new Map<Element, number>();
+
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the most visible card
-        let bestEntry: IntersectionObserverEntry | null = null;
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
-              bestEntry = entry;
+          visibilityMap.set(entry.target, entry.intersectionRatio);
+        }
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          let bestIdx = -1;
+          let bestRatio = 0;
+          cardRefs.current.forEach((ref, i) => {
+            if (!ref) return;
+            const ratio = visibilityMap.get(ref) || 0;
+            if (ratio > bestRatio) {
+              bestRatio = ratio;
+              bestIdx = i;
             }
+          });
+          if (bestIdx !== -1 && bestRatio > 0.4) {
+            setActiveScrollStep(steps[bestIdx].num);
           }
-        }
-        if (bestEntry) {
-          const idx = cardRefs.current.indexOf(bestEntry.target as HTMLDivElement);
-          if (idx !== -1) {
-            setActiveScrollStep(steps[idx].num);
-          }
-        }
+        }, 150);
       },
       {
-        threshold: [0.3, 0.5, 0.7, 1.0],
-        rootMargin: '-20% 0px -20% 0px',
+        threshold: [0.0, 0.4, 0.6, 1.0],
+        rootMargin: '-10% 0px -30% 0px',
       }
     );
 
@@ -88,7 +96,7 @@ export default function Roadmap() {
       if (ref) observer.observe(ref);
     });
 
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); clearTimeout(debounceTimer); };
   }, [isMobile]);
 
   const isExpanded = (stepNum: number) => {

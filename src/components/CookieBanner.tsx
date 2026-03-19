@@ -12,9 +12,16 @@ export default function CookieBanner() {
       if (diff < 86400000) return; // 24 hours
     }
 
-    const timer = setTimeout(() => setVisible(true), 20000);
-    return () => clearTimeout(timer);
+    const showTimer = setTimeout(() => setVisible(true), 20000);
+    return () => clearTimeout(showTimer);
   }, []);
+
+  // Auto-hide after 20 seconds of being visible
+  useEffect(() => {
+    if (!visible) return;
+    const hideTimer = setTimeout(() => handleAccept(), 20000);
+    return () => clearTimeout(hideTimer);
+  }, [visible]);
 
   const handleAccept = () => {
     localStorage.setItem('cookie_accepted', String(Date.now()));
