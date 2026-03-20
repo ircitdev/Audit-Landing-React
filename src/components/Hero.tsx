@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowUpRight, Scale, Code2, X, ChevronDown } from 'lucide-react';
+import { ArrowUpRight, Scale, Code2, X, ChevronDown, FileText, CheckCircle2 } from 'lucide-react';
 import { reachGoal } from '../metrika';
+import { API, METRIKA, TELEGRAM, getUtmParams } from '../config';
 
 export default function Hero() {
   const [displayText, setDisplayText] = useState("");
@@ -9,18 +10,43 @@ export default function Hero() {
   const [isTypingDone, setIsTypingDone] = useState(false);
   const [isStoryOpen, setIsStoryOpen] = useState(false);
   const [isArticleOpen, setIsArticleOpen] = useState(false);
+  const [isPdfOpen, setIsPdfOpen] = useState(false);
+  const [pdfStatus, setPdfStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [pdfConsent, setPdfConsent] = useState(false);
+
+  const handlePdfSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPdfStatus('loading');
+    const fd = new FormData(e.currentTarget);
+    try {
+      const res = await fetch(API.sendPdf, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: fd.get('name'), email: fd.get('email'), utm: getUtmParams(), referrer: document.referrer || null, page: window.location.href }),
+      });
+      if (res.ok) {
+        reachGoal(METRIKA.goals.emailCaptured, { source: 'hero_pdf' });
+        reachGoal(METRIKA.goals.pdfDownload);
+        setPdfStatus('success');
+      } else throw new Error();
+    } catch {
+      setPdfStatus('error');
+      setTimeout(() => setPdfStatus('idle'), 3000);
+    }
+  };
 
   useEffect(() => {
-    if (!isArticleOpen && !isStoryOpen) return;
+    if (!isArticleOpen && !isStoryOpen && !isPdfOpen) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (isArticleOpen) setIsArticleOpen(false);
+        if (isPdfOpen) setIsPdfOpen(false);
+        else if (isArticleOpen) setIsArticleOpen(false);
         else if (isStoryOpen) setIsStoryOpen(false);
       }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [isArticleOpen, isStoryOpen]);
+  }, [isArticleOpen, isStoryOpen, isPdfOpen]);
 
   useEffect(() => {
     if (isArticleOpen) {
@@ -163,16 +189,13 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="flex flex-col gap-3 pt-2"
           >
-            <a
-              href="https://t.me/WebAuditRuBot?start=zakazat_audit__hero"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => reachGoal('telegram_click', { source: 'hero' })}
+            <button
+              onClick={() => { setIsPdfOpen(true); setPdfStatus('idle'); setPdfConsent(false); }}
               className="w-full px-8 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] uppercase tracking-widest text-sm transition-all active:scale-95 relative overflow-hidden group text-center"
             >
-              <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
+              <span className="relative z-10 drop-shadow-md flex items-center justify-center gap-3"><FileText className="w-5 h-5" /> ПРЕЗЕНТАЦИЯ</span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-            </a>
+            </button>
             <button
               onClick={() => setIsStoryOpen(true)}
               className="w-full px-8 py-4 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm transition-all active:scale-95"
@@ -197,16 +220,13 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="flex flex-wrap gap-6 pt-4"
           >
-            <a
-              href="https://t.me/WebAuditRuBot?start=zakazat_audit__hero"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => reachGoal('telegram_click', { source: 'hero' })}
-              className="inline-block px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden group text-center"
+            <button
+              onClick={() => { setIsPdfOpen(true); setPdfStatus('idle'); setPdfConsent(false); }}
+              className="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden group text-center"
             >
-              <span className="relative z-10 drop-shadow-md">ЗАКАЗАТЬ АУДИТ</span>
+              <span className="relative z-10 drop-shadow-md flex items-center gap-3"><FileText className="w-5 h-5" /> ПРЕЗЕНТАЦИЯ</span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-            </a>
+            </button>
             <button
               onClick={() => setIsStoryOpen(true)}
               className="px-10 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95"
@@ -240,6 +260,84 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* ═══════ PDF MODAL ═══════ */}
+      <AnimatePresence>
+        {isPdfOpen && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+              onClick={() => setIsPdfOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10 w-full max-w-md frosted p-8 md:p-10 rounded-[2rem] border border-orange-500/30 shadow-2xl"
+            >
+              <button
+                onClick={() => setIsPdfOpen(false)}
+                aria-label="Закрыть"
+                className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-red-500 text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <AnimatePresence mode="wait">
+                {pdfStatus === 'success' ? (
+                  <motion.div key="ok" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-5 py-4">
+                    <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                      <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                    </div>
+                    <h3 className="text-2xl font-heading font-black uppercase tracking-tighter text-white">Письмо отправлено</h3>
+                    <p className="text-slate-400 text-sm">Проверьте почту — презентация уже там</p>
+                    <div className="frosted p-5 rounded-2xl border border-sky-500/20 bg-sky-500/5 space-y-3">
+                      <p className="text-slate-300 text-sm">Пока изучаете — пройдите <span className="text-sky-400 font-bold">бесплатный экспресс-аудит</span> за 2 минуты</p>
+                      <a
+                        href={TELEGRAM.deepLink('free_audit', 'hero_pdf')}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => reachGoal(METRIKA.goals.telegramClick, { source: 'hero_pdf' })}
+                        className="inline-flex items-center gap-3 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white font-black rounded-xl uppercase text-xs tracking-widest transition-all shadow-lg shadow-sky-500/20"
+                      >
+                        Бесплатный аудит
+                      </a>
+                    </div>
+                    <button onClick={() => setIsPdfOpen(false)} className="text-slate-500 hover:text-white text-xs uppercase tracking-widest font-bold transition-colors">
+                      Закрыть
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                    <div className="text-center">
+                      <h3 className="text-2xl md:text-3xl font-heading font-black uppercase tracking-tighter text-white mb-2">Презентация</h3>
+                      <p className="text-slate-400 text-sm">Юридическая страховка и финансовая модель безопасности в одном PDF</p>
+                    </div>
+                    <form onSubmit={handlePdfSubmit} className="flex flex-col gap-3">
+                      <input name="name" type="text" placeholder="Имя" required aria-label="Имя" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                      <input name="email" type="email" placeholder="Email" required aria-label="Email" className="p-4 rounded-xl text-sm w-full bg-white/5 border border-white/10 text-white focus:border-orange-500 focus:outline-none transition-colors" />
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" checked={pdfConsent} onChange={(e) => setPdfConsent(e.target.checked)} className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 shrink-0 accent-orange-500" />
+                        <span className="text-[11px] text-slate-500 leading-relaxed">
+                          Даю согласие на{' '}
+                          <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('open-privacy'))} className="text-orange-500 hover:text-orange-400 underline underline-offset-2">обработку персональных данных</button>
+                        </span>
+                      </label>
+                      <button type="submit" disabled={pdfStatus === 'loading' || !pdfConsent} className="bg-orange-600 hover:bg-orange-500 text-white py-5 rounded-xl font-black uppercase text-sm tracking-widest transition-all shadow-xl shadow-orange-600/20 disabled:opacity-50 flex items-center justify-center gap-3">
+                        {pdfStatus === 'loading' ? 'ОТПРАВКА...' : pdfStatus === 'error' ? 'ОШИБКА — ПОВТОРИТЬ' : <><FileText className="w-5 h-5" /> ПОЛУЧИТЬ PDF</>}
+                      </button>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ═══════ STORY MODAL ═══════ */}
       <AnimatePresence>

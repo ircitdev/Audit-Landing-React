@@ -9,7 +9,6 @@ import StickyCta from './components/StickyCta';
 import { AuditPoint } from './types';
 
 // Lazy loading components below the fold for performance optimization
-const DownloadSection = lazy(() => import('./components/DownloadSection'));
 const Roadmap = lazy(() => import('./components/Roadmap'));
 const AuditPoints = lazy(() => import('./components/AuditPoints'));
 const MarketingAudit = lazy(() => import('./components/MarketingAudit'));
@@ -58,9 +57,6 @@ export default function App() {
       <main className="flex-grow flex flex-col w-full relative z-10 pt-16 md:pt-32 pb-20">
         <Hero />
         
-        <Suspense fallback={<div className="h-32 flex items-center justify-center text-orange-500/50">Загрузка...</div>}>
-          <DownloadSection />
-        </Suspense>
         <Suspense fallback={null}>
           <Roadmap />
         </Suspense>
