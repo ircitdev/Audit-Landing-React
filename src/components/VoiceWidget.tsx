@@ -33,7 +33,7 @@ export default function VoiceWidget() {
           <div id="voiceOrbLabel" className="voice-orb-label"></div>
         </div>
         <div className="voice-quick-actions">
-          <button className="voice-chip" style={{borderColor:'rgba(249,115,22,0.3)',color:'#fb923c'}} data-text="Хочу бесплатный аудит сайта">🛡️ Бесплатный аудит</button>
+          <button className="voice-chip voice-chip-primary" data-text="Хочу бесплатный аудит сайта">🛡️ Бесплатный аудит</button>
           <button className="voice-chip" data-text="Какие риски есть у моего сайта?">Риски сайта</button>
           <button className="voice-chip" data-text="Какие штрафы грозят за нарушения?">Штрафы</button>
           <button className="voice-chip" data-text="Сколько стоит полный аудит?">Тарифы</button>

@@ -149,6 +149,8 @@
   font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;
 }
 .voice-chip:hover { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.3); color: #f97316; }
+.voice-chip-primary { border-color: rgba(249,115,22,0.3); color: #fb923c; }
+[data-theme="light"] .voice-chip-primary { border-color: rgba(249,115,22,0.2); color: #ea580c; }
 .voice-audit-cta { background: none !important; padding: 4px 0 !important; }
 .voice-audit-btn {
   width: 100%; padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer;
@@ -184,3 +186,109 @@
   background: #ef4444; color: #fff; transition: opacity 0.2s;
 }
 .voice-btn-stop:hover { opacity: 0.85; }
+
+/* ═══════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════ */
+[data-theme="light"] .voice-panel {
+  background: rgba(255,255,255,0.96);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+}
+[data-theme="light"] .voice-panel-close {
+  border-color: rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.04);
+  color: #64748b;
+}
+[data-theme="light"] .voice-panel-close:hover {
+  background: rgba(0,0,0,0.08);
+  color: #0f172a;
+}
+[data-theme="light"] .voice-panel-title { color: #0f172a; }
+[data-theme="light"] .voice-panel-sub { color: #64748b; }
+[data-theme="light"] .voice-toggle-tooltip {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(0,0,0,0.08);
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+[data-theme="light"] .voice-toggle-status-dot { border-color: #fff; }
+[data-theme="light"] .voice-toggle {
+  box-shadow: 0 4px 20px rgba(249,115,22,0.25), 0 0 0 1px rgba(249,115,22,0.1);
+}
+[data-theme="light"] .voice-toggle:hover {
+  box-shadow: 0 6px 30px rgba(249,115,22,0.35);
+}
+
+/* Chat messages */
+[data-theme="light"] .voice-msg.user {
+  background: #f1f5f9;
+  border-color: rgba(0,0,0,0.06);
+  color: #0f172a;
+}
+[data-theme="light"] .voice-msg.ai {
+  background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(234,88,12,0.06));
+  border-color: rgba(249,115,22,0.12);
+  color: #1e293b;
+}
+[data-theme="light"] .voice-chat-messages {
+  scrollbar-color: rgba(0,0,0,0.1) transparent;
+}
+
+/* Typing indicator */
+[data-theme="light"] .voice-typing {
+  background: linear-gradient(135deg, rgba(249,115,22,0.06), rgba(234,88,12,0.04));
+  border-color: rgba(249,115,22,0.1);
+}
+
+/* Quick action chips */
+[data-theme="light"] .voice-chip {
+  border-color: rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.03);
+  color: #475569;
+}
+[data-theme="light"] .voice-chip:hover {
+  background: rgba(249,115,22,0.08);
+  border-color: rgba(249,115,22,0.2);
+  color: #ea580c;
+}
+
+/* Input row */
+[data-theme="light"] .voice-input-row {
+  border-top-color: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .voice-text-input {
+  border-color: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.03);
+  color: #0f172a;
+}
+[data-theme="light"] .voice-text-input::placeholder { color: #94a3b8; }
+[data-theme="light"] .voice-text-input:focus { border-color: rgba(249,115,22,0.4); }
+
+/* Mic button */
+[data-theme="light"] .voice-mic-btn {
+  background: rgba(0,0,0,0.04);
+  color: #64748b;
+  border-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .voice-mic-btn:hover {
+  background: rgba(249,115,22,0.1);
+  color: #ea580c;
+  border-color: rgba(249,115,22,0.2);
+}
+
+/* Status badge */
+[data-theme="light"] .voice-status-badge {
+  background: rgba(34,197,94,0.08);
+  border-color: rgba(34,197,94,0.15);
+}
+[data-theme="light"].listening .voice-status-badge,
+[data-theme="light"] .voice-widget.listening .voice-status-badge {
+  background: rgba(249,115,22,0.08);
+  border-color: rgba(249,115,22,0.2);
+}
+[data-theme="light"].speaking .voice-status-badge,
+[data-theme="light"] .voice-widget.speaking .voice-status-badge {
+  background: rgba(234,88,12,0.08);
+  border-color: rgba(234,88,12,0.2);
+}
