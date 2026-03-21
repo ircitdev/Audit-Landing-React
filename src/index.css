@@ -32,6 +32,9 @@
   --scrollbar-thumb: #334155;
   --scrollbar-hover: #475569;
   --gradient-overlay: linear-gradient(to top, #020617, rgba(2, 6, 23, 0.5), transparent);
+  --radius-button: 1rem;
+  --radius-card: 2rem;
+  --radius-card-lg: 3rem;
 }
 
 [data-theme="light"] {

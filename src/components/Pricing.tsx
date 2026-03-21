@@ -38,7 +38,7 @@ export default function Pricing({ onOpenLead }: PricingProps) {
               onClick={() => { reachGoal('lead_form_open', { package: 'razvedka' }); onOpenLead('Разведка — 25 000 ₽'); }}
               className="w-full md:w-auto px-10 py-6 bg-slate-900 hover:bg-slate-800 text-white rounded-[2rem] text-center font-black text-sm uppercase tracking-widest transition-all shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1"
             >
-              ЗАКАЗАТЬ АУДИТ
+              ЗАКАЗАТЬ ЗАЩИТУ
             </button>
           </div>
         </motion.div>
@@ -63,7 +63,7 @@ export default function Pricing({ onOpenLead }: PricingProps) {
               onClick={() => { reachGoal('lead_form_open', { package: 'proekt' }); onOpenLead('Проект — 45 000 ₽'); }}
               className="w-full py-5 border border-slate-700 hover:border-orange-500 hover:text-orange-500 rounded-[2rem] text-center font-black text-xs uppercase tracking-widest text-white transition-colors"
             >
-              ПОЛУЧИТЬ ПЛАН
+              ЗАКАЗАТЬ ЗАЩИТУ
             </button>
           </motion.div>
 
@@ -78,18 +78,18 @@ export default function Pricing({ onOpenLead }: PricingProps) {
             <div className="absolute top-8 right-[-50px] rotate-45 bg-orange-600 px-20 py-3 text-[10px] font-black uppercase text-white shadow-xl tracking-widest">
               Выбор 80%
             </div>
-            <h3 className="font-heading font-black text-3xl md:text-4xl mb-4 uppercase tracking-tighter text-white">Броня</h3>
+            <h3 className="font-heading font-black text-3xl md:text-4xl mb-4 uppercase tracking-tighter text-white">Полная Броня</h3>
             <p className="text-5xl md:text-6xl font-black text-orange-500 mb-12 tracking-tighter">90 000 ₽</p>
             <ul className="space-y-6 text-base md:text-lg text-slate-200 mb-12 flex-grow">
-              <li className="flex items-center gap-4"><span className="text-2xl">🚀</span> Правки "под ключ"</li>
-              <li className="flex items-center gap-4"><span className="text-2xl">📜</span> Мониторинг 3 мес.</li>
-              <li className="flex items-center gap-4"><span className="text-2xl">🛡️</span> Сертификат DS</li>
+              <li className="flex items-center gap-4"><Check className="w-6 h-6 text-orange-500 shrink-0" /> Правки «под ключ»</li>
+              <li className="flex items-center gap-4"><Check className="w-6 h-6 text-orange-500 shrink-0" /> Мониторинг 3 мес.</li>
+              <li className="flex items-center gap-4"><Check className="w-6 h-6 text-orange-500 shrink-0" /> Сертификат DS-CERT</li>
             </ul>
             <button
               onClick={() => { reachGoal('lead_form_open', { package: 'bronya' }); onOpenLead('Броня'); }}
               className="w-full bg-orange-600 hover:bg-orange-500 text-white py-6 md:py-8 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-orange-600/20 transition-all active:scale-95"
             >
-              ВЗЯТЬ ПОД ЗАЩИТУ
+              ЗАКАЗАТЬ ЗАЩИТУ
             </button>
           </motion.div>
         </div>
@@ -132,6 +132,9 @@ export default function Pricing({ onOpenLead }: PricingProps) {
           />
           <div className="absolute inset-0 rounded-[3rem] shadow-[inset_0_0_100px_rgba(0,0,0,0.6)] pointer-events-none"></div>
         </div>
+        <p className="text-slate-400 text-sm mt-8 max-w-xl mx-auto leading-relaxed">
+          DS-CERT — сертификат соответствия сайта требованиям 152-ФЗ, технической безопасности и маркетинговых стандартов. Выдаётся после полного аудита по 32 пунктам. Документ для клиентов и контролирующих органов.
+        </p>
       </motion.div>
     </section>
   );
