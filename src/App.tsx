@@ -60,12 +60,31 @@ export default function App() {
         <Suspense fallback={null}>
           <Roadmap />
         </Suspense>
+
+        {/* Story banner — trust signal */}
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <div className="frosted p-6 md:p-8 rounded-[2rem] border-red-500/20 flex flex-col md:flex-row items-start gap-4 md:gap-6">
+            <span className="text-3xl md:text-4xl shrink-0">⚖️</span>
+            <div className="space-y-2">
+              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+                <strong className="text-white">Основатель получил 15 суток ареста</strong> за один забытый логотип Instagram* на сайте.
+                Теперь он защищает ваш бизнес от таких же рисков.{' '}
+                <a href="https://ria.ru/20260224/sud-2076330347.html" target="_blank" rel="noreferrer" className="text-orange-400 hover:text-orange-300 underline underline-offset-2 font-semibold">
+                  Источник: РИА Новости →
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <Suspense fallback={null}>
+          <RoiSection />
+        </Suspense>
         <Suspense fallback={null}>
           <AuditPoints onPointClick={setSelectedPoint} />
           <MarketingAudit />
         </Suspense>
         <Suspense fallback={null}>
-          <RoiSection />
           <Pricing onOpenLead={handleOpenLead} />
           <FAQ />
         </Suspense>

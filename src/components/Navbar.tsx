@@ -63,7 +63,7 @@ export default function Navbar() {
               rel="noreferrer"
               className="hidden sm:inline-flex bg-orange-600 hover:bg-orange-500 px-4 py-2.5 md:px-6 md:py-3 rounded-xl text-[10px] md:text-xs font-black uppercase shadow-lg shadow-orange-600/20 text-white transition-all active:scale-95 shrink-0"
             >
-              SOS АУДИТ
+              БЕСПЛАТНЫЙ АУДИТ
             </a>
 
             {/* Theme toggle */}
@@ -128,7 +128,7 @@ export default function Navbar() {
                 rel="noreferrer"
                 className="px-10 py-4 bg-orange-600 hover:bg-orange-500 text-white font-black uppercase text-sm tracking-widest rounded-2xl shadow-2xl shadow-orange-600/30 transition-all active:scale-95"
               >
-                SOS АУДИТ
+                БЕСПЛАТНЫЙ АУДИТ
               </a>
               <span className="text-slate-600 text-xs uppercase tracking-widest">sitechist.ru</span>
             </motion.div>

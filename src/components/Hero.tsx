@@ -189,19 +189,30 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="flex flex-col gap-3 pt-2"
           >
-            <button
-              onClick={() => { setIsPdfOpen(true); setPdfStatus('idle'); setPdfConsent(false); }}
-              className="w-full px-8 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] uppercase tracking-widest text-sm transition-all active:scale-95 relative overflow-hidden group text-center"
+            <a
+              href="https://t.me/WebAuditRuBot?start=free_audit__hero"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => reachGoal('telegram_click', { source: 'hero' })}
+              className="w-full px-8 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] uppercase tracking-widest text-sm transition-all active:scale-95 relative overflow-hidden group text-center block"
             >
-              <span className="relative z-10 drop-shadow-md flex items-center justify-center gap-3"><FileText className="w-5 h-5" /> ПРЕЗЕНТАЦИЯ</span>
+              <span className="relative z-10 drop-shadow-md">БЕСПЛАТНЫЙ АУДИТ ЗА 2 МИН</span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-            </button>
-            <button
-              onClick={() => setIsStoryOpen(true)}
-              className="w-full px-8 py-4 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm transition-all active:scale-95"
-            >
-              Моя история
-            </button>
+            </a>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setIsPdfOpen(true); setPdfStatus('idle'); setPdfConsent(false); }}
+                className="flex-1 px-4 py-4 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-xs transition-all active:scale-95 flex items-center justify-center gap-2"
+              >
+                <FileText className="w-4 h-4" /> PDF
+              </button>
+              <button
+                onClick={() => setIsStoryOpen(true)}
+                className="flex-1 px-4 py-4 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-xs transition-all active:scale-95"
+              >
+                Моя история
+              </button>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -220,16 +231,25 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="flex flex-wrap gap-6 pt-4"
           >
+            <a
+              href="https://t.me/WebAuditRuBot?start=free_audit__hero"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => reachGoal('telegram_click', { source: 'hero' })}
+              className="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden group"
+            >
+              <span className="relative z-10 drop-shadow-md">БЕСПЛАТНЫЙ АУДИТ</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            </a>
             <button
               onClick={() => { setIsPdfOpen(true); setPdfStatus('idle'); setPdfConsent(false); }}
-              className="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:shadow-[0_0_60px_rgba(249,115,22,0.6)] uppercase tracking-widest text-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden group text-center"
+              className="px-8 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95"
             >
-              <span className="relative z-10 drop-shadow-md flex items-center gap-3"><FileText className="w-5 h-5" /> ПРЕЗЕНТАЦИЯ</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+              <FileText className="w-4 h-4" /> PDF
             </button>
             <button
               onClick={() => setIsStoryOpen(true)}
-              className="px-10 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95"
+              className="px-8 py-6 frosted hover:bg-slate-800 rounded-2xl text-white font-bold uppercase tracking-wider text-sm flex items-center gap-3 transition-all hover:-translate-y-1 duration-300 active:scale-95"
             >
               Моя история
             </button>

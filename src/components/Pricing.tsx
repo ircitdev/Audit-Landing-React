@@ -95,6 +95,23 @@ export default function Pricing({ onOpenLead }: PricingProps) {
         </div>
       </div>
 
+      {/* Guarantee */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="max-w-3xl mx-auto mt-16 frosted p-8 md:p-10 rounded-[2rem] border-emerald-500/20 text-center"
+      >
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <span className="text-3xl">🛡️</span>
+          <h4 className="font-heading font-black text-xl uppercase tracking-tight text-white">Гарантия результата</h4>
+        </div>
+        <p className="text-slate-300 text-sm leading-relaxed max-w-xl mx-auto">
+          Если после нашей работы придёт претензия от Роскомнадзора — <span className="text-emerald-400 font-bold">Денис лично защитит вас в суде бесплатно</span>.
+          Ответственность зафиксирована в договоре. Единственный эксперт, который подписывается под результатом.
+        </p>
+      </motion.div>
+
       {/* Final Result */}
       <motion.div 
         initial={{ opacity: 0, y: 40 }}
