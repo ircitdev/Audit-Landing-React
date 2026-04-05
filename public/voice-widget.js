@@ -669,4 +669,31 @@
     });
   }, 15000);
 
+  // ─── Auto-open after 2 minutes ───────────
+  var AUTO_OPEN_KEY = 'sitechistAiAutoOpened';
+  var alreadyAutoOpened = false;
+  try { alreadyAutoOpened = sessionStorage.getItem(AUTO_OPEN_KEY) === '1'; } catch (e) {}
+
+  if (!alreadyAutoOpened) {
+    setTimeout(function () {
+      if (isOpen) return; // already open by user
+      try { sessionStorage.setItem(AUTO_OPEN_KEY, '1'); } catch (e) {}
+      // Ensure toggle is visible
+      toggle.classList.add('visible');
+      // Open the panel
+      loadPrompt(function () {
+        isOpen = true;
+        widget.classList.toggle('open', true);
+        syncBodyScroll();
+        if (firstOpen) {
+          firstOpen = false;
+          playOpenSound();
+          hasGreeted = true;
+        }
+        // Add greeting message to chat
+        addMessage('ai', 'Здравствуйте! Я AI-консультант сервиса СайтЧИСТ. Помогу разобраться с безопасностью и юридической защитой вашего сайта. Чем могу помочь?', 'text');
+      });
+    }, 120000); // 2 minutes
+  }
+
 })();
